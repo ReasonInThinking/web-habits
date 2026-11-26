@@ -1,0 +1,2594 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Исправленный неоново-бирюзовый фавикон (BASE64) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIiBmaWxsPSJub25lIiBzdHJva2U9IiMwMGYzZmYiIHN0cm9rZS13aWR0aD0iOCI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iMzAiIHN0cm9rZS1kYXNoYXJyYXk9IjEwLDEwIi8+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNSIgZmlsbD0iIzAwZjNmZiIvPjxsaW5lIHgxPSI1MCIgeTE9IjUiIHgyPSI1MCIgeTI9IjI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48bGluZSB4MT0iNTAiIHkxPSI3NSIgeDI9IjU5IiB5Mj0iOTUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIvPjxsaW5lIHgxPSI1IiB5MT0iNTAiIHgyPSIyNSIgeTI9IjE1MCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PGxpbmUgeDE9Ijc1IiB5MT0iNTAiIHgyPSI5NSIgeTI9IjUwIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=">
+
+<title>The Identity Path — Cyber Samurai Tracker</title>
+
+    <style>
+      :root {
+        --bg-marine: #050e11;
+        --teal-bright: #00f3ff;
+        --teal-soft: #0e2730;
+        --soft-cream: #cceef2;
+        --accent-coral: #ff5252;
+        --text-dark: #050e11;
+        /* Карточка теперь мягко сливается с бирюзовым фоном благодаря размытию */
+        --card-bg: rgba(10, 29, 36, 0.65);
+        --shadow-glow: 0 0 20px rgba(0, 243, 255, 0.2);
+        --shadow-soft: 0 15px 40px rgba(0, 0, 0, 0.7);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+
+    body { background-color: var(--bg-marine); color: var(--soft-cream); overflow: hidden; height: 100vh; width: 100vw; position: relative; }
+    /* Идеально ровный круглый указатель на чистом фоне */
+    html, body {
+        cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0OCIgaGVpZ2h0PSI0OCIgdmlld0JveD0iMCAwIDQ4IDQ4IiBmaWxsPSJub25lIj48Y2lyY2xlIGN4PSIyNCIgY3k9IjI0IiByPSIxMiIgc3Ryb2tlPSIjMDBmM2ZmIiBzdHJva2Utd2lkdGg9IjIiIGZpbGw9IiMwZTI3MzAiIGZpbGwtb3BhY2l0eT0iMC40Ii8+PGNpcmNsZSBjeD0iMjQiIGN5PSIyNCIgcj0iMyIgZmlsbD0iIzAwZjNmZiIvPjwvc3ZnPg==") 24 24, auto !important;
+    }
+
+    /* Идеально ровная ретро-рука (поинтер) в бирюзовом цвете при наведении на кнопки */
+  .btn-archive-complete:hover,  button, input, label, .card-habit-item, .card-timer-box, .btn-delete-card, .btn-ping-action, #warningConfirm, #warningCancel, .btn-add-card, .btn-next, .btn-submit, .btn-back {
+        cursor: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNiIgaGVpZ2h0PSIzNiIgdmlld0JveD0iMCAwIDM2IDM2IiBmaWxsPSJub25lIj48cGF0aCBkPSJNMTIsMTQgTDEyLDQgTDE2LDQgTDE2LDE0IEwxNiw4IEwyMCw4IEwyMCwxNCBMMjAsMTAgTDI0LDEwIEwyNCwxNCBMMjQsMTIgTDI4LDEyIEwyOCwyMiBDMjgsMjggMjQsMzAgMTgsMzAgTDE0LDI4IEwxMCwyMiBMMTAsMTQgWiIgZmlsbD0iIzBhMjEyOCIgc3Ryb2tlPSIjMDBmM2ZmIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0ibWl0ZXIiLz48L3N2Zz4=") 14 4, pointer !important;
+    }
+
+    #bgCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+    .app-container { position: relative; z-index: 2; height: 100%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 40px 20px; box-sizing: border-box; }
+
+    /* Манифест */
+    .manifesto { text-align: center; max-width: 700px; background: rgba(5, 14, 17, 0.85); padding: 18px 25px; border-radius: 12px; border: 1px solid rgba(0, 243, 255, 0.25); backdrop-filter: blur(8px); box-shadow: var(--shadow-glow); }
+    .manifesto h2 { font-size: 1.1rem; font-weight: 600; color: var(--teal-bright); margin-bottom: 6px; letter-spacing: 0.5px; text-shadow: 0 0 5px rgba(0, 243, 255, 0.3); }
+    .manifesto p { color: #61838f; font-size: 0.85rem; font-style: italic; }
+
+    /* Слайдер */
+    .cards-slider { flex-grow: 1; width: 100%; display: flex; justify-content: center; align-items: center; position: relative; }
+    .no-cards { text-align: center; font-size: 1.1rem; color: rgba(204, 238, 242, 0.4); }
+    .no-cards .highlight { color: var(--teal-bright); font-weight: bold; font-size: 1.4rem; text-shadow: 0 0 10px rgba(0, 243, 255, 0.4); }
+
+    /* Кнопка Плюс */
+    .btn-add-card { position: fixed; bottom: 45px; left: 50%; transform: translateX(-50%); width: 60px; height: 60px; border-radius: 50%; background-color: transparent; color: var(--teal-bright); border: 2px solid var(--teal-bright); font-size: 2.2rem; cursor: pointer; box-shadow: var(--shadow-glow); transition: all 0.2s ease; font-weight: bold; display: flex; align-items: center; justify-content: center; z-index: 10; backdrop-filter: blur(4px); }
+    .btn-add-card:hover { color: var(--bg-marine); background-color: var(--teal-bright); box-shadow: 0 0 25px var(--teal-bright); transform: translateX(-50%) scale(1.05); }
+
+    /* ИДЕНТИЧНОСТЬ КАРТОЧКА С ГЛИЧ-ЭФФЕКТАМИ */
+.identity-card {
+    background: var(--card-bg);
+    color: var(--soft-cream);
+    width: 460px;            /* УВЕЛИЧЕНО: Карточка стала массивнее */
+    min-height: 290px;       /* УВЕЛИЧЕНО: Задана солидная базовая высота */
+    padding: 30px;           /* УВЕЛИЧЕНО: Больше пространства внутри */
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(0, 243, 255, 0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 22px;               /* УВЕЛИЧЕНО: Расстояние между элементами */
+    position: absolute;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease, border-color 0.2s;
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.8) translateX(100px);
+    backdrop-filter: blur(12px);
+}
+
+/* Активная карточка */
+.identity-card.active {
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1) translateX(0);
+    z-index: 5;
+    border-color: rgba(0, 243, 255, 0.3);
+}
+
+/* Эффект увеличения масштаба и жесткого кибер-мигания при наведении */
+.identity-card.active:hover {
+    transform: scale(1.04) translateY(-5px); /* Плавно увеличивается и приподнимается */
+    border-color: var(--teal-bright);
+    /* Мощное неоновое свечение по бокам с глитч-сдвигом */
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.35), -3px 0 #ff5252, 3px 0 #00f3ff;
+    /* Запуск двойной анимации: ломаное мерцание + сдвиг пикселей */
+    animation: cyber-blink-flicker 0.25s linear infinite, cyber-glitch 0.3s ease-in-out infinite alternate;
+}
+
+.identity-card.prev { opacity: 0.15; transform: scale(0.85) translateX(-270px); pointer-events: none; }
+.identity-card.next { opacity: 0.15; transform: scale(0.85) translateX(270px); pointer-events: none; }
+
+/* Шапка карточки */
+.card-header-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; }
+.card-goal { font-size: 1.3rem; font-weight: 600; color: #fff; line-height: 1.3; letter-spacing: 0.3px; }
+
+.streak-badge { font-size: 0.8rem; font-family: monospace; background: rgba(0, 243, 255, 0.08); padding: 4px 8px; border-radius: 4px; color: var(--teal-bright); font-weight: bold; border: 1px solid rgba(0, 243, 255, 0.2); white-space: nowrap; }
+.btn-delete-card { background: none; border: none; color: #43606b; font-size: 1.3rem; cursor: pointer; transition: color 0.2s; line-height: 1; }
+.btn-delete-card:hover { color: var(--accent-coral); }
+
+/* Таймер-бокс */
+.card-timer-box { background: rgba(4, 13, 17, 0.6); padding: 14px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(0, 243, 255, 0.08); }
+.timer-label { font-size: 0.7rem; text-transform: uppercase; color: #597d8c; font-weight: bold; display: block; margin-bottom: 2px; letter-spacing: 0.5px; }
+.timer-countdown { font-size: 1.15rem; font-family: monospace; color: var(--soft-cream); font-weight: bold; }
+
+/* Кнопка Плюс внутри карточки */
+.btn-ping-action { background: transparent; color: var(--teal-bright); border: 1px solid var(--teal-bright); padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 0.8rem; transition: all 0.2s; }
+.btn-ping-action:hover { background-color: var(--teal-bright); color: var(--bg-marine); box-shadow: 0 0 15px rgba(0, 243, 255, 0.5); }
+
+/* Список привычек */
+.card-habits-list { list-style: none; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid rgba(0, 243, 255, 0.08); padding-top: 15px; }
+.card-habit-item { display: flex; align-items: center; gap: 12px; cursor: pointer; font-size: 1.45rem; padding: 6px 8px; border-radius: 4px; transition: all 0.1s; color: #8cb6c4; }
+.card-habit-item:hover { background: rgba(0, 243, 255, 0.04); color: #fff; }
+.card-habit-item input { width: 17px; height: 17px; accent-color: var(--teal-bright); cursor: pointer; background: transparent; border: 1px solid rgba(0, 243, 255, 0.3); }
+.card-habit-item.completed { color: #3a535e; }
+
+
+/* Модалка ввода */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 8, 10, 0.85); z-index: 100; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+.modal-overlay.hidden { opacity: 0; pointer-events: none; }
+.modal-window { background: #07151a; color: var(--soft-cream); padding: 30px; border-radius: 12px; width: 90%; max-width: 400px; box-shadow: var(--shadow-soft); border: 1px solid rgba(0, 243, 255, 0.2); }
+.modal-step { display: none; }
+.modal-step.active { display: block; }
+.modal-step h3 { margin-bottom: 4px; font-size: 1.2rem; color: #fff; }
+.step-hint { font-size: 0.8rem; color: #597d8c; margin-bottom: 15px; }
+.modal-step input[type="text"] { width: 100%; padding: 12px; border-radius: 6px; border: 1px solid #163640; background: #040d10; font-size: 0.95rem; color: #fff; margin-bottom: 15px; outline: none; }
+.modal-step input[type="text"]:focus { border-color: var(--teal-bright); box-shadow: 0 0 10px rgba(0, 243, 255, 0.1); }
+.btn-add-habit-field { background: none; border: 1px dashed rgba(0, 243, 255, 0.4); color: var(--teal-bright); padding: 8px; border-radius: 6px; cursor: pointer; width: 100%; margin-bottom: 15px; font-weight: bold; font-size: 0.8rem; }
+.modal-buttons { display: flex; justify-content: flex-end; gap: 10px; }
+.modal-buttons button { padding: 8px 14px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; font-size: 0.8rem; }
+.btn-next, .btn-submit { background: var(--teal-bright); color: var(--bg-marine); }
+.btn-back { background: #112930; color: #61838f; }
+
+/* Эффект увеличения масштаба и ПЛАВНОГО неонового дыхания при наведении */
+.identity-card.active:hover {
+    transform: scale(1.03) translateY(-4px); /* Карточка плавно приподнимается */
+    border-color: var(--teal-bright);
+    /* Мягкое неоновое свечение, никаких резких сдвигов пикселей */
+    box-shadow: 0 0 30px rgba(0, 243, 255, 0.4);
+    /* Заменили жесткое мигание на плавную пульсацию "дыхания" */
+    animation: cyber-neon-breath 2s ease-in-out infinite alternate;
+}
+
+/* АНИМАЦИЯ МЯГКОГО НЕОНОВОГО ДЫХАНИЯ (Вместо резкого мигания) */
+@keyframes cyber-neon-breath {
+    0% {
+        border-color: rgba(0, 243, 255, 0.3);
+        box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+    }
+    100% {
+        border-color: var(--teal-bright);
+        box-shadow: 0 0 35px rgba(0, 243, 255, 0.5);
+    }
+}
+
+/* АНИМАЦИЮ КИБЕР-ГЛИЧА (cyber-glitch) ДЛЯ КАРТОЧКИ МОЖНО ПОЛНОСТЬЮ УДАЛИТЬ, ЕСЛИ ОНА БЫЛА */
+
+/* Принудительные стили для кнопки удаления в углу карточки */
+.identity-card .btn-delete-card {
+    position: absolute !important;
+    top: 15px !important;       /* Приподняли повыше к верхнему краю */
+    right: 18px !important;     /* Сдвинули к правому краю */
+    background: none !important;
+    border: none !important;
+    color: var(--accent-coral) !important; /* Заметный кораллово-красный */
+    font-size: 1.6rem !important;          /* Крупный, заметный размер */
+    font-weight: bold !important;
+    cursor: pointer !important;
+    transition: transform 0.2s, color 0.1s !important;
+    line-height: 0.7 !important;
+    padding: 4px !important;
+    margin: 0 !important;
+    z-index: 20 !important;     /* Всегда поверх остальных элементов */
+}
+.identity-card .btn-delete-card:hover {
+    color: #ff3333 !important;             /* Яркий неоновый красный */
+    transform: scale(1.15) !important;     /* Аккуратное увеличение при наведении */
+}
+
+/* Делаем небольшой отступ справа у шапки, чтобы текст цели не налезал на крестик */
+.identity-card .card-header-row {
+    padding-right: 25px !important;
+}
+
+/* Переопределяем ширину окна для красивой двухколоночной сетки */
+.modal-window {
+    max-width: 680px !important; /* Увеличили с 400px до 680px */
+    width: 95% !important;
+    padding: 30px !important;
+}
+
+/* Обертка для контента и картинки */
+.modal-layout-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+/* Левая сторона: контент и поля */
+.modal-content-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Правая сторона: неприметная большая SVG-графика */
+.modal-svg-side {
+    width: 160px;
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 243, 255, 0.07); /* Делаем цвет ультра-тусклым и прозрачным в тон интерфейса */
+    flex-shrink: 0;
+    transition: color 0.3s ease;
+}
+
+/* Небольшой интерактив: картинка становится чуть заметнее, когда инпут в фокусе */
+.modal-window:hover .modal-svg-side {
+    color: rgba(0, 243, 255, 0.12); /* Слегка проявляется при наведении на окно */
+}
+
+
+/* Базовый заголовок цели — плотный, сочный, но без выжигающих глаза эффектов */
+.cyber-glitch-target {
+    position: relative;
+    color: #fff;
+    font-size: 1.65rem;
+    font-weight: 900;
+    line-height: 1.2;
+    font-family: Impact, 'Arial Black', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    /* Мягкие, приглушенные базовые тени */
+    text-shadow: -1px -1px 0 rgba(255, 82, 82, 0.4),
+                  1px 1px 0 rgba(0, 243, 255, 0.4),
+                  0 0 6px rgba(0, 243, 255, 0.2);
+}
+
+/* СКАНЕР-СЛОЙ: Бегущая волна сделана очень мягкой и деликатной */
+.cyber-glitch-target::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    color: #fff;
+    /* Ослабили интенсивность неонового свечения волны */
+    text-shadow: -1px -1px 0 var(--accent-coral),
+                  1px 1px 0 var(--teal-bright),
+                  0 0 10px rgba(0, 243, 255, 0.6);
+    opacity: 0;
+    /* Сканирование раз в 7 секунд — плавно и неторопливо */
+    animation: cyber-wave-scan-soft 7s ease-in-out infinite;
+    pointer-events: none;
+}
+
+/* АНИМАЦИЯ МЯГКОГО И РЕДКОГО ПЕРЕЛИВА (Глаза больше не устают) */
+@keyframes cyber-wave-scan-soft {
+    0%, 60%, 100% {
+        opacity: 0;
+        clip-path: inset(0 0 100% 0);
+        transform: translateX(0);
+    }
+    /* Максимальная прозрачность волны теперь всего 0.35 — она еле заметна, но создает динамику */
+    65% {
+        opacity: 0.35;
+        clip-path: inset(0 0 70% 0);
+        transform: translateX(0.5px);
+    }
+    72% {
+        opacity: 0.4;
+        clip-path: inset(30% 0 30% 0);
+        transform: translateX(-0.5px);
+    }
+    80% {
+        opacity: 0.35;
+        clip-path: inset(70% 0 0 0);
+        transform: translateX(0.5px);
+    }
+    85% {
+        opacity: 0;
+        clip-path: inset(100% 0 0 0);
+        transform: translateX(0);
+    }
+}
+
+/* =========================================================================
+   УЛЬТИМАТИВНАЯ ТАЧ-АДАПТАЦИЯ (МОБИЛЬНЫЕ И ПЛАНШЕТЫ ДО 1000PX)
+   ========================================================================= */
+
+   /* Базовое скрытие мобильных стрелок на компьютерах */
+           .mobile-nav-arrow { display: none; }
+@media (max-width: 1000px) {
+
+
+  .mobile-nav-arrow {
+                display: flex !important; /* Проявляем на мобилках и планшетах */
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 50px;
+                height: 60px;
+                background: rgba(10, 29, 36, 0.6);
+                border: 1px solid rgba(0, 243, 255, 0.2);
+                color: var(--teal-bright);
+                font-size: 1.5rem;
+                font-weight: bold;
+                border-radius: 8px;
+                cursor: pointer;
+                z-index: 20; /* Поверх фоновых карточек */
+                backdrop-filter: blur(4px);
+                transition: background 0.2s, border-color 0.2s;
+                /* Отключаем выделение текста при частых тапах пальцем */
+                user-select: none;
+                -webkit-user-select: none;
+            }
+
+            /* Левая стрелка жмется к левому краю экрана */
+            #mobileArrowLeft { left: 5px; }
+
+            /* Правая стрелка жмется к правому краю экрана */
+            #mobileArrowRight { right: 5px; }
+
+            /* Эффект при активном нажатии пальцем (клике) */
+            .mobile-nav-arrow:active {
+                background: rgba(0, 243, 255, 0.15);
+                border-color: var(--teal-bright);
+                box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            }
+
+            /* Чтобы карточки не налезали под кнопки, сузим область слайдера на мобилках */
+            .cards-slider {
+                width: calc(100% - 110px) !important;
+                margin: 0 auto;
+            }
+
+
+    #bgCanvas { display: none !important; }
+    html, body, button, input, label, .card-habit-item, .card-timer-box { cursor: auto !important; }
+    .manifesto {
+      display: none !important;
+    }
+    .app-container {
+        padding: 20px 15px 110px 15px !important;
+        justify-content: flex-start;
+        gap: 20px;
+        height: 100vh;
+    }
+
+    /* Крупный манифест */
+    .manifesto { width: 100%; max-width: 600px; padding: 18px 22px !important; }
+    .manifesto h2 { font-size: 1.15rem !important; }
+    .manifesto p { font-size: 0.8rem !important; }
+    .manifesto svg { width: 55px !important; height: 55px !important; }
+
+    /* Массивная тач-карточка */
+    .identity-card {
+        width: 100% !important;
+        max-width: 500px !important;
+        padding: 30px !important;
+        gap: 24px !important;
+        min-height: auto !important;
+        position: absolute !important;
+    }
+
+    .identity-card.prev { transform: scale(0.85) translateX(-105%) !important; opacity: 0 !important; }
+    .identity-card.next { transform: scale(0.85) translateX(105%) !important; opacity: 0 !important; }
+    .identity-card.active { transform: scale(1) translateX(0) !important; opacity: 1 !important; }
+
+    .cyber-glitch-target { font-size: 1.6rem !important; }
+
+    /* Жирный блок таймера под палец */
+    .card-timer-box { padding: 18px 20px !important; gap: 20px !important; border-radius: 10px !important; }
+    .timer-countdown { font-size: 1.35rem !important; }
+
+    /* Крупная кнопка "+ Плюс" */
+    .btn-ping-action {
+        padding: 14px 24px !important; /* Увеличили высоту и ширину */
+        font-size: 1rem !important;
+        border-radius: 8px !important;
+        min-height: 48px;
+    }
+
+    /* Огромные элементы списка подзадач (Тач-зоны) */
+    .card-habits-list { gap: 12px !important; padding-top: 20px !important; }
+    .card-habit-item {
+        font-size: 1.1rem !important;
+        padding: 14px 16px !important; /* Настоящая большая кнопка для тапа */
+        background: rgba(0, 243, 255, 0.03);
+        border-radius: 8px;
+        border: 1px solid rgba(0, 243, 255, 0.05);
+    }
+
+    /* Новая мобильная кнопка удаления на дне карточки */
+    .mobile-delete-bar {
+        display: block !important; /* Проявляем на мобилках */
+        width: 100%;
+        background: rgba(255, 82, 82, 0.06);
+        color: var(--accent-coral);
+        border: 1px dashed rgba(255, 82, 82, 0.3);
+        padding: 14px !important;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: bold;
+        font-family: monospace;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        text-align: center;
+        margin-top: 5px;
+        min-height: 48px;
+    }
+
+    /* Скрываем десктопный крестик из шапки на мобильных */
+    .desktop-delete-btn { display: none !important; }
+
+    /* УДОБНОЕ МAСШТАБНОЕ ОКНО ВВОДА (Защита от перекрытия клавиатурой) */
+    .modal-window {
+        width: 96% !important;
+        max-width: 550px !important;
+        padding: 30px 25px !important;
+        border-radius: 14px !important;
+    }
+    .modal-layout-wrapper { gap: 0px !important; flex-direction: column !important; }
+    .modal-svg-side { display: none !important; }
+    .modal-content-side { width: 100% !important; }
+
+    .modal-step h3 { font-size: 1.4rem !important; margin-bottom: 8px !important; }
+    .step-hint { font-size: 0.85rem !important; line-height: 1.4 !important; margin-bottom: 20px !important; }
+
+    /* Высокие инпуты, в которые легко попадать пальцем */
+    .modal-step input[type="text"] {
+        padding: 16px 14px !important;
+        font-size: 1.05rem !important;
+        margin-bottom: 22px !important;
+        border-radius: 8px !important;
+    }
+
+    /* Массивные кнопки управления модалкой */
+    .modal-buttons { gap: 15px !important; margin-top: 10px; }
+    .modal-buttons button {
+        padding: 15px 24px !important;
+        font-size: 1rem !important;
+        border-radius: 8px !important;
+        min-height: 50px;
+        flex: 1; /* Кнопки занимают всю ширину */
+    }
+    .btn-add-habit-field {
+        padding: 15px !important;
+        font-size: 1rem !important;
+        border-radius: 8px !important;
+        min-height: 50px;
+        margin-bottom: 20px !important;
+    }
+}
+
+/* По умолчанию скрываем мобильную кнопку удаления на компьютерах */
+.mobile-delete-bar { display: none; }
+.desktop-delete-btn { display: inline-block; }
+
+/* Кастомный скроллбар для списка архива */
+#archiveContainer::-webkit-scrollbar { width: 4px; }
+#archiveContainer::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
+#archiveContainer::-webkit-scrollbar-thumb { background: var(--teal-soft); border-radius: 2px; }
+#archiveContainer::-webkit-scrollbar-thumb:hover { background: var(--teal-bright); }
+
+/* Архивный элемент */
+.archive-item {
+    background: rgba(0, 243, 255, 0.03);
+    border: 1px solid rgba(0, 243, 255, 0.1);
+    padding: 12px 15px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+/* СТРОГАЯ КИБЕР-КНОПКА ТРИУМФА (ЯНТАРНО-ЗОЛОТАЯ) */
+.btn-archive-complete {
+    background: rgba(255, 215, 0, 0.02) !important;
+    color: rgba(255, 215, 0, 0.7) !important;
+    border: 1px dashed rgba(255, 215, 0, 0.25) !important;
+    padding: 12px 16px !important;
+    border-radius: 8px !important;
+    font-size: 0.85rem !important;
+    font-weight: 900 !important;
+    font-family: 'Consolas', 'Courier New', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 2px !important;
+    cursor: pointer !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    box-sizing: border-box !important;
+    margin-top: 5px !important;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+/* Мягкое, благородное золотое свечение при наведении (без выжигания глаз) */
+.btn-archive-complete:hover {
+    background: rgba(255, 215, 0, 0.06) !important;
+    border: 1px solid rgba(255, 215, 0, 0.8) !important;
+    color: #ffd700 !important;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.15),
+                inset 0 0 10px rgba(255, 215, 0, 0.05) !important;
+    text-shadow: 0 0 4px rgba(255, 215, 0, 0.5) !important;
+    transform: translateY(-1px);
+}
+
+.btn-archive-complete:active {
+    transform: scale(0.98) translateY(0);
+}
+
+/* Адаптация под тач-экраны до 1000px */
+@media (max-width: 1000px) {
+    .btn-archive-complete {
+        padding: 15px !important;
+        font-size: 0.9rem !important;
+        min-height: 48px;
+    }
+}
+
+
+
+
+/* КИБЕР-ВИДЖЕТ КУБКА В УГЛУ ЭКРАНА (МЯГКИЙ И СПОКОЙНЫЙ) */
+.cyber-trophy-widget {
+    position: fixed;
+    top: 25px;
+    right: 25px;
+    width: 50px;
+    height: 50px;
+    background: rgba(10, 29, 36, 0.4); /* Сделали фон более прозрачным */
+    border: 1px solid rgba(0, 243, 255, 0.15);
+    border-radius: 10px;
+    color: rgba(0, 243, 255, 0.5); /* Убрали ядовитую яркость в покое */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px;
+    box-sizing: border-box;
+    z-index: 90;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Убрали неоновое свечение в покое */
+    transition: all 0.3s ease;
+    /* Ультра-медленное, глубокое дыхание системы (раз в 12 секунд) */
+    animation: cyber-trophy-calm-breath 12s ease-in-out infinite;
+}
+
+/* Эффект только при наведении мыши — наливается мягким золотом */
+.cyber-trophy-widget:hover {
+    color: #ffd700 !important;
+    border-color: rgba(255, 215, 0, 0.6);
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+    animation-play-state: paused; /* Полная статика при фокусе */
+}
+
+.cyber-trophy-widget:active {
+    transform: scale(0.95);
+}
+
+/* ЕСЛИ В АРХИВЕ ЕСТЬ ПОБЕДЫ: Мягкое, приглушенное золотое свечение */
+.cyber-trophy-widget.has-rewards {
+    color: rgba(255, 215, 0, 0.6);
+    border-color: rgba(255, 215, 0, 0.2);
+    animation: cyber-trophy-gold-calm 12s ease-in-out infinite;
+}
+
+/* АНИМАЦИЯ 1: Идеально плавное, редкое бирюзовое дыхание (Без мелькания) */
+@keyframes cyber-trophy-calm-breath {
+    0%, 100% { color: rgba(0, 243, 255, 0.4); border-color: rgba(0, 243, 255, 0.15); }
+    50% { color: rgba(0, 243, 255, 0.7); border-color: rgba(0, 243, 255, 0.35); }
+}
+
+/* АНИМАЦИЯ 2: Идеально плавное, редкое золотое дыхание */
+@keyframes cyber-trophy-gold-calm {
+    0%, 100% { color: rgba(255, 215, 0, 0.4); border-color: rgba(255, 215, 0, 0.15); }
+    50% { color: rgba(255, 215, 0, 0.75); border-color: rgba(255, 215, 0, 0.4); }
+}
+
+/* Мобильная адаптация */
+@media (max-width: 1000px) {
+    .cyber-trophy-widget {
+        top: 15px !important;
+        right: 15px !important;
+        width: 54px !important;
+        height: 55px !important;
+    }
+}
+
+/* КРИСТАЛЬНО ЯСНОЕ И КОНТРАСТНОЕ ВЫДЕЛЕНИЕ ПРИ НАЖАТИИ TAB */
+
+/* Стираем дефолтную синюю рамку браузера */
+#warningCancel:focus-visible, #warningConfirm:focus-visible,
+#triumphCancel:focus-visible, #triumphConfirm:focus-visible,
+#archiveWarningCancel:focus-visible, #archiveWarningConfirm:focus-visible {
+    outline: none !important;
+    transform: scale(1.04); /* Заметное увеличение активной кнопки */
+    transition: all 0.15s ease-in-out;
+}
+
+/* ЯСНОЕ ВЫДЕЛЕНИЕ ДЛЯ КНОПОК ОТМЕНЫ (НАЗАД) — Полная бирюзовая заливка */
+#warningCancel:focus-visible,
+#triumphCancel:focus-visible,
+#archiveWarningCancel:focus-visible {
+    background: var(--teal-bright) !important;
+    color: #040d11 !important; /* Глубокий темный текст для бешеного контраста */
+    border-color: var(--teal-bright) !important;
+    font-weight: 900 !important;
+    box-shadow: 0 0 20px var(--teal-bright),
+                0 0 30px rgba(0, 243, 255, 0.3) !important;
+}
+
+/* ЯСНОЕ ВЫДЕЛЕНИЕ ДЛЯ ОПАСНЫХ КНОПОК ПОДТВЕРЖДЕНИЯ (СТЕРЕТЬ / ДОСТИГНУТО / СЖЕЧЬ) — Полная коралловая заливка */
+#warningConfirm:focus-visible,
+#triumphConfirm:focus-visible,
+#archiveWarningConfirm:focus-visible {
+    background: rgb(171, 11, 19) !important;
+    color: rgb(223, 213, 227) !important; /* Глубокий темный текст для бешеного контраста */
+    border-color: var(--accent-coral) !important;
+    font-weight: 900 !important;
+    box-shadow: 0 0 10px rgb(21, 21, 22);
+}
+
+
+/* Стильный фокус и наведение для кнопки скачивания архива */
+#downloadArchiveBtn:hover {
+    background: rgba(0, 243, 255, 0.12) !important;
+
+
+}
+#downloadArchiveBtn:focus-visible {
+    outline: none !important;
+    background: var(--teal-bright) !important;
+    color: #040d11 !important;
+
+
+}
+
+
+
+/* КИБЕР-ВИДЖЕТ ЗАМОРОЗКИ В УГЛУ ЭКРАНА */
+.cyber-freeze-widget {
+    position: fixed;
+    top: 85px; /* Чуть ниже нашего кубка */
+    right: 25px;
+    width: 50px;
+    height: 50px;
+    background: rgba(10, 29, 36, 0.4);
+    border: 1px solid rgba(0, 243, 255, 0.15);
+    border-radius: 10px;
+    color: rgba(0, 243, 255, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 11px;
+    box-sizing: border-box;
+    /* ИСПРАВЛЕНО: z-index поднят до 200, чтобы кнопка оставалась поверх ледяного щита */
+    z-index: 200 !important;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+.cyber-freeze-widget:hover {
+    color: #00f3ff !important;
+    border-color: #00f3ff;
+    transform: scale(1.05);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+}
+/* Состояние, когда заморозка ВКЛЮЧЕНА (Кнопка горит холодным льдом) */
+.cyber-freeze-widget.system-frozen {
+    color: #a5f3fc !important;
+    border-color: #22d3ee !important;
+    background: rgba(34, 211, 238, 0.1) !important;
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.35) !important;
+    filter: drop-shadow(0 0 8px #22d3ee);
+}
+
+/* КРИО-ЭФФЕКТ ДЛЯ ЗАМОРОЖЕННЫХ КАРТОЧЕК */
+.identity-card.frozen-state {
+    border-color: #22d3ee !important;
+    background: rgba(10, 25, 30, 0.75) !important;
+    box-shadow: 0 0 25px rgba(34, 211, 238, 0.15), inset 0 0 20px rgba(34, 211, 238, 0.05) !important;
+    opacity: 0.65;
+    pointer-events: none !important;
+    filter: grayscale(30%) contrast(90%);
+}
+
+/* Выделение кнопок заморозки при Tab навигации */
+#freezeSystemBtn:focus-visible {
+    outline: none !important;
+    background: #22d3ee !important;
+    color: #040d11 !important;
+    box-shadow: 0 0 20px #22d3ee !important;
+    transform: scale(1.04);
+}
+
+@media (max-width: 1000px) {
+    .cyber-freeze-widget {
+        top: 78px !important;
+        right: 15px !important;
+        width: 55px !important;
+        height: 55px !important;
+    }
+}
+
+/* АППАРАТНАЯ АНИМАЦИЯ РЕДКИХ СНЕЖИНОК (БЕЗ ЛАГОВ) */
+.css-snowflake {
+    position: absolute;
+    color: rgba(34, 211, 238, 0.15);
+    font-family: Arial, sans-serif;
+    filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.2));
+    animation: smoothFloating 6s ease-in-out infinite alternate;
+}
+
+@keyframes smoothFloating {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-20px) rotate(15deg); }
+}
+
+
+    </style>
+</head>
+<body>
+
+  <!-- Мигающий интерактивный виджет Зала Славы в углу экрана -->
+  <div id="openArchiveBtn" class="cyber-trophy-widget" title="Открыть Зал Славы (Hall of Fame)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+          <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+          <path d="M4 22h16"></path>
+          <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path>
+          <path d="M12 2a6 6 0 0 1 6 6v3.5c0 3.3-2.7 5.5-6 5.5s-6-2.2-6-5.5V8a6 6 0 0 1 6-6z" fill="currentColor" fill-opacity="0.15"></path>
+      </svg>
+  </div>
+
+
+  <!-- Интерактивная кнопка управления Протоколом Заморозки -->
+  <div id="freezeSystemBtn" class="cyber-freeze-widget" title="Активировать Протокол Заморозки">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2v20M17 5H7M19 9H5M21 13H3M19 17H5M17 19H7"/>
+          <path d="M2 12h20M12 2l3 3M12 2L9 5M12 22l3-3M12 22l-3-3M2 12l3 3M2 12l3-3M22 12l-3 3M22 12l-3-3"/>
+      </svg>
+  </div>
+
+  <!-- Выделенный автономный слой для эффекта падающего снега Зимы -->
+  <!-- Полноэкранное легкое уведомление крио-сна (Без лагов) -->
+<div id="freezeOverlay" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(4, 13, 17, 0.95); z-index: 150; display: none; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(10px); user-select: none;">
+
+    <!-- Крупный зеленый статичный ромб (Твой любимый элемент) -->
+    <div style="color: #00ff66; width: 80px; height: 80px; margin-bottom: 25px; filter: drop-shadow(0 0 15px rgba(0, 255, 102, 0.5));">
+        <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M50 15 L85 50 L50 85 L15 50 Z" fill="rgba(0, 255, 102, 0.05)" />
+            <circle cx="50" cy="50" r="5" fill="#00ff66" />
+            <line x1="50" y1="2" x2="50" y2="10" stroke-width="3" />
+            <line x1="50" y1="90" x2="50" y2="98" stroke-width="3" />
+            <line x1="2" y1="50" x2="10" y2="50" stroke-width="3" />
+            <line x1="90" y1="50" x2="98" y2="50" stroke-width="3" />
+        </svg>
+    </div>
+
+    <!-- Текст системного сообщения -->
+    <h2 style="color: #a5f3fc; font-family: Impact, sans-serif; font-size: 2.2rem; text-transform: uppercase; letter-spacing: 3px; margin: 0 0 10px 0; text-shadow: 0 0 10px rgba(34, 211, 238, 0.3);">Протокол Крио-Сна Активирован</h2>
+    <p style="color: #597d8c; font-family: 'Consolas', monospace; font-size: 1rem; letter-spacing: 1px; margin: 0; text-transform: uppercase;">[ Все таймеры удержания целей временно приостановлены ]</p>
+
+    <!-- Легкие редкие CSS-снежинки (не грузят систему) -->
+    <div class="css-snowflake" style="top: 15%; left: 10%; font-size: 2.5rem;">❄</div>
+    <div class="css-snowflake" style="top: 25%; right: 15%; font-size: 4rem; animation-delay: 2s;">❄</div>
+    <div class="css-snowflake" style="top: 70%; left: 20%; font-size: 3.5rem; animation-delay: 1s;">❄</div>
+    <div class="css-snowflake" style="top: 65%; right: 12%; font-size: 2rem; animation-delay: 3s;">❄</div>
+</div>
+
+
+
+    <!-- Фоновый холст для аниме-пейзажа (Речка, хибара, котик) -->
+    <canvas id="bgCanvas"></canvas>
+    <!-- Выделенный автономный слой для эффекта Матрицы -->
+    <canvas id="triumphCanvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 5; display: none;"></canvas>
+
+    <!-- Главный контейнер приложения -->
+    <main class="app-container">
+
+
+        <!-- Философский манифест с причудливой кибер-геометрией (На русском) -->
+
+        <a href="./" title="Домой" style="display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; margin-bottom: 12px; color: rgb(84, 174, 186); opacity: 0.7; transition: opacity 0.2s ease-in-out; text-decoration: none;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.7">
+    <svg xmlns="http://w3.org" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        <polyline points="9 22 9 12 15 12 15 22"/>
+    </svg>
+</a>
+        <header class="manifesto" style="display: flex; align-items: center; justify-content: space-between; gap: 25px; text-align: left;">
+
+            <!-- Левая сторона: Текст манифеста -->
+            <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                <h2 style="font-size: 1.25rem; font-weight: 700; color: rgb(84, 174, 186); letter-spacing: 0.5px; text-shadow: 0 0 5px rgba(0, 243, 255, 0.3);">
+                    Что ты делаешь сегодня — тем ты и являешься.
+                </h2>
+                <!-- ОБНОВЛЕНО: Строгий системный моноширинный стиль текста -->
+  <p style="color: #61838f; font-size: 0.82rem; font-family: sans-serif; font-style: normal; letter-spacing: 0.5px; line-height: 1.4; margin: 0; text-transform: uppercase; opacity: 0.85;">
+      Твои ежедневные действия вытачивают твою личность. Такова твоя идентичность.
+  </p>
+
+
+            </div>
+
+            <!-- Правая сторона: Причудливый неоновый компас направления духа (Яркость повышена) -->
+            <div style="color: rgba(0, 243, 255, 0.4); width: 65px; height: 65px; flex-shrink: 0; transition: all 0.3s ease; filter: drop-shadow(0 0 4px rgba(0, 243, 255, 0.2));"
+                 onmouseover="this.style.color='var(--teal-bright)'; this.style.filter='drop-shadow(0 0 12px var(--teal-bright))'; this.style.transform='scale(1.05) rotate(45deg)';"
+                 onmouseout="this.style.color='rgba(0, 243, 255, 0.4)'; this.style.filter='drop-shadow(0 0 4px rgba(0, 243, 255, 0.2))'; this.style.transform='scale(1) rotate(0deg)';"
+                 title="Компас Идентичности">
+                <svg viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Внешнее технологичное кольцо -->
+                    <circle cx="50" cy="50" r="40" stroke-dasharray="6,4" />
+                    <circle cx="50" cy="50" r="32" stroke-width="1" opacity="0.5" />
+
+                    <!-- Причудливые внутренние стрелы клинков (Роза ветров) -->
+                    <path d="M50,10 L55,42 L50,50 L45,42 Z" fill="currentColor" fill-opacity="0.1" />
+                    <path d="M50,90 L45,58 L50,50 L55,58 Z" fill="currentColor" fill-opacity="0.1" />
+                    <path d="M90,50 L58,45 L50,50 L58,55 Z" fill="currentColor" fill-opacity="0.1" />
+                    <path d="M10,50 L42,55 L50,50 L42,45 Z" fill="currentColor" fill-opacity="0.1" />
+
+                    <!-- Центральное ядро-перекрестие -->
+                    <circle cx="50" cy="50" r="4" fill="currentColor" />
+                    <path d="M25,25 L35,35 M75,25 L65,35 M25,75 L35,65 M75,75 L65,65" stroke-width="1.5" />
+                </svg>
+            </div>
+
+        </header>
+
+
+
+        <!-- Новая обертка, которая выстраивает стрелочки и слайдер в один ряд -->
+<div style="position: relative; width: 100%; display: flex; align-items: center; justify-content: center; flex-grow: 1;">
+
+    <!-- Левая мобильная стрелка (появится только на экранах меньше 1000px) -->
+    <button id="mobileArrowLeft" class="mobile-nav-arrow" title="Предыдущая карточка">＜</button>
+
+    <!-- Твой оригинальный блок слайдера (оставляем его внутри) -->
+    <section class="cards-slider" id="cardsSlider">
+        <div class="no-cards">
+            <p>У вас пока нет сформированных идентичностей.</p>
+            <p>Нажмите <span class="highlight">+</span>, чтобы начать путь.</p>
+        </div>
+    </section>
+
+    <!-- Правая мобильная стрелка (появится только на экранах меньше 1000px) -->
+    <button id="mobileArrowRight" class="mobile-nav-arrow" title="Следующая карточка">＞</button>
+
+</div>
+
+        <!-- Главная кнопка Плюс для создания новой карточки -->
+        <button class="btn-add-card" id="openModalBtn" aria-label="Создать цель">+</button>
+
+    </main>
+
+    <!-- Пошаговое модальное окно создания -->
+    <div class="modal-overlay hidden" id="modalOverlay">
+      <!-- Увеличили окно для поддержки двухколоночного кибер-интерфейса -->
+      <div class="modal-window">
+
+        <!-- Шаг 1: Глобальная цель + SVG Стрелы СЛЕВА -->
+<div class="modal-step active" id="step1">
+  <div class="modal-layout-wrapper">
+
+      <!-- Большой, но приглушенный SVG силуэт стрелы (СЛЕВА) -->
+      <div class="modal-svg-side">
+          <svg viewBox="0 0 100 100" fill="none" stroke="currentColor">
+              <!-- Оперение стрелы -->
+              <path d="M15,80 L25,65 L10,65 L20,50 L35,50" stroke-width="1.5" stroke-linecap="round"/>
+              <!-- Древко стрелы, летящей по диагонали вверх-вправо -->
+              <line x1="20" y1="75" x2="75" y2="25" stroke-width="2" stroke-linecap="round"/>
+              <!-- Наконечник стрелы, бьющий точно в перекрестие -->
+              <path d="M65,20 L80,15 L75,30 Z" stroke-width="2" fill="currentColor" fill-opacity="0.1" stroke-linejoin="round"/>
+              <!-- Стилизованные линии скорости глитча/ветра -->
+              <line x1="45" y1="60" x2="60" y2="45" stroke-width="1" stroke-dasharray="4,4"/>
+              <line x1="30" y1="45" x2="40" y2="35" stroke-width="0.8"/>
+          </svg>
+      </div>
+
+      <!-- Контентная часть (ТЕПЕРЬ СПРАВА) -->
+      <div class="modal-content-side">
+          <h3>Чего вы хотите достичь?</h3>
+          <p class="step-hint">Представьте, что вы уже выполнили задачу (напр. "Прочитал(а) книгу Достоевского 'Двойник'", "Освоил(а) 100 новых английских слов", "Посетил(а) 10 достопримечательностей города")</p>
+          <input type="text" id="inputGoal" placeholder="Фактический результат (число / объем)..." autofocus autocomplete="off">
+          <!-- Одиночный кибер-переключатель режима под инпутом (Работает на чистом CSS) -->
+          <div style="margin: -5px 0 20px 0; width: 100%; user-select: none;">
+              <style>
+                  /* Скрываем стандартный белый квадрат Windows */
+                  #modalIsInfinite { display: none; }
+
+                  /* Задаем базовый стиль плашки (Режим 48 часов) */
+                  .cyber-toggle-label {
+                      display: flex; align-items: center; gap: 12px; width: 100%;
+                      padding: 14px 16px; background: rgba(0, 243, 255, 0.01);
+                      border: 1px dashed rgba(0, 243, 255, 0.2); border-radius: 8px;
+                      cursor: pointer; box-sizing: border-box; transition: all 0.2s;
+                  }
+                  .cyber-toggle-label .mark { color: var(--teal-bright); font-family: monospace; font-size: 1.4rem; line-height: 1; }
+                  .cyber-toggle-label .txt { color: var(--teal-bright); font-family: monospace; font-size: 0.85rem; letter-spacing: 0.5px; }
+
+                  /* МАГИЯ ЧИСТОГО CSS: Когда чекбокс нажат, плашка сама переключается в вечный зеленый режим */
+                  #modalIsInfinite:checked + .cyber-toggle-label {
+                      background: rgba(0, 255, 102, 0.03);
+                      border: 1px solid #00ff66;
+                      box-shadow: 0 0 15px rgba(0, 255, 102, 0.15);
+                  }
+                  #modalIsInfinite:checked + .cyber-toggle-label .mark { color: #00ff66; }
+                  #modalIsInfinite:checked + .cyber-toggle-label .mark::before { content: "●"; }
+                  #modalIsInfinite:checked + .cyber-toggle-label .mark::after { display: none; }
+                  #modalIsInfinite:checked + .cyber-toggle-label .txt { color: #00ff66; }
+              </style>
+
+              <input type="checkbox" id="modalIsInfinite">
+
+              <label for="modalIsInfinite" class="cyber-toggle-label">
+                  <!-- В покое тут пустой круг, при клике CSS заменит его на закрашенный ● -->
+                  <span class="mark"><span style="display:inline-block; width:0; height:0; overflow:hidden;">○</span></span>
+                  <span class="txt">[ БЕССРОЧНЫЙ ПРОТОКОЛ (БЕЗ ТАЙМЕРА) ]</span>
+              </label>
+          </div>
+
+
+
+          <div class="modal-buttons">
+              <button class="btn-next" id="step1Next">Далее (Enter)</button>
+          </div>
+      </div>
+
+  </div>
+</div>
+
+
+          <!-- Шаг 2: Ежедневки + SVG Горячего Чая/Кофе -->
+          <div class="modal-step" id="step2">
+              <div class="modal-layout-wrapper">
+                  <div class="modal-content-side">
+                      <h3>Что планируете делать ежедневно для достижения глобальной цели?</h3>
+                      <p class="step-hint">Минимум 1 действие, максимум 3 привычки</p>
+
+                      <!-- Контейнер для динамических полей ввода -->
+                      <div id="habitsContainer"></div>
+
+                      <button class="btn-add-habit-field" id="addHabitFieldBtn">+ Добавить действие</button>
+
+                      <div class="modal-buttons">
+                          <button class="btn-back" id="step2Back">Назад</button>
+                          <button class="btn-submit" id="step2Submit">Создать (Enter)</button>
+                      </div>
+                  </div>
+                  <!-- Большой, но приглушенный SVG силуэт чашки чая/кофе (символ ежедневного ритуала у нашей кофейни) -->
+                  <div class="modal-svg-side">
+                      <svg viewBox="0 0 100 100" fill="none" stroke="currentColor">
+                          <path d="M30,40 L70,40 C70,40 73,65 50,65 C27,65 30,40 30,40 Z" stroke-width="2"/>
+                          <path d="M70,45 C75,45 78,49 78,52 C78,56 75,59 70,59" stroke-width="1.5"/>
+                          <path d="M25,72 L75,72" stroke-width="2"/>
+                          <path d="M42,28 Q45,22 42,16 M50,30 Q53,24 50,18 M58,28 Q61,22 58,16" stroke-width="1.2" stroke-linecap="round"/>
+                      </svg>
+                  </div>
+              </div>
+          </div>
+
+      </div>
+  </div>
+
+
+    <script>
+      // =========================================================================
+    // БЛОК 3: CANVAS-ФОН (МОРСКОЙ ВАЙБ, КОФЕЙНЯ, ТУСКЛАЯ ТОРИИ, БОЛЬШОЙ ГАЛЕОН СЛЕВА)
+    // =========================================================================
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let w = canvas.width = window.innerWidth;
+    let h = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+    });
+
+    // Светящиеся неоново-бирюзовые частицы
+    class MarineParticle {
+        constructor() { this.reset(); this.y = Math.random() * h; }
+        reset() {
+            this.x = Math.random() * w; this.y = h + 20; this.size = Math.random() * 3 + 1.5;
+            this.speedX = Math.random() * 0.8 - 0.4; this.speedY = -(Math.random() * 0.5 + 0.3);
+            this.opacity = Math.random() * 0.6 + 0.2; this.pulseSpeed = Math.random() * 0.02 + 0.01; this.pulseDir = 1;
+        }
+        update() {
+            this.x += this.speedX; this.y += this.speedY;
+            this.opacity += this.pulseSpeed * this.pulseDir;
+            if (this.opacity > 0.8 || this.opacity < 0.2) this.pulseDir *= -1;
+            if (this.y < -20 || this.x > w || this.x < -20) this.reset();
+        }
+        draw() {
+            ctx.save(); ctx.globalAlpha = this.opacity; ctx.fillStyle = '#00f3ff';
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        }
+    }
+    const particles = Array.from({length: 25}, () => new MarineParticle());
+
+    // Белый котик у кофейни
+    const cat = { x: w * 0.5, y: h - 110, speed: 0.4, dir: 1, animFrame: 0 };
+    let globalAnimTime = 0;
+
+    function drawFirTree(x, y, scale) {
+        ctx.save(); ctx.fillStyle = '#0a232c'; ctx.beginPath(); ctx.moveTo(x, y);
+        ctx.lineTo(x - 20 * scale, y + 40 * scale); ctx.lineTo(x - 10 * scale, y + 40 * scale);
+        ctx.lineTo(x - 30 * scale, y + 80 * scale); ctx.lineTo(x - 15 * scale, y + 80 * scale);
+        ctx.lineTo(x - 40 * scale, y + 130 * scale); ctx.lineTo(x + 40 * scale, y + 130 * scale);
+        ctx.lineTo(x + 15 * scale, y + 80 * scale); ctx.lineTo(x + 30 * scale, y + 80 * scale);
+        ctx.lineTo(x + 10 * scale, y + 40 * scale); ctx.lineTo(x + 20 * scale, y + 40 * scale);
+        ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+
+    function drawScene() {
+        globalAnimTime += 0.02;
+
+        // Небо
+        let skyGrd = ctx.createLinearGradient(0, 0, 0, h);
+        skyGrd.addColorStop(0, '#050e11'); skyGrd.addColorStop(0.5, '#0a1d24'); skyGrd.addColorStop(1, '#112f3b');
+        ctx.fillStyle = skyGrd; ctx.fillRect(0, 0, w, h);
+
+        // ЗАДНИЙ ПЛАН: Холмы и хвойные леса
+        ctx.fillStyle = '#08171d'; ctx.beginPath();
+        ctx.moveTo(0, h * 0.65); ctx.quadraticCurveTo(w * 0.3, h * 0.52, w * 0.6, h * 0.62);
+        ctx.quadraticCurveTo(w * 0.85, h * 0.58, w, h * 0.67); ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+        drawFirTree(w * 0.08, h * 0.49, 0.7);
+        drawFirTree(w * 0.18, h * 0.46, 0.8);
+        drawFirTree(w * 0.55, h * 0.52, 0.6);
+        drawFirTree(w * 0.78, h * 0.50, 0.75);
+
+        // ТУСКЛАЯ ТОРИИ-АРКА
+        ctx.save();
+        let toriiX = w * 0.28;
+        let toriiY = h * 0.60;
+        ctx.globalAlpha = 0.55;
+        ctx.fillStyle = '#a63333';
+        ctx.fillRect(toriiX, toriiY, 6, 35);
+        ctx.fillRect(toriiX + 34, toriiY, 6, 35);
+        ctx.fillRect(toriiX - 4, toriiY + 8, 48, 4);
+        ctx.beginPath();
+        ctx.moveTo(toriiX - 8, toriiY); ctx.quadraticCurveTo(toriiX + 20, toriiY + 3, toriiX + 48, toriiY);
+        ctx.lineTo(46 + toriiX, toriiY - 5); ctx.quadraticCurveTo(toriiX + 20, toriiY - 2, toriiX - 6, toriiY - 5);
+        ctx.closePath(); ctx.fill();
+        ctx.restore();
+
+        // Бирюзовая речка
+        ctx.fillStyle = '#0d2d38'; ctx.beginPath();
+        ctx.moveTo(0, h); ctx.lineTo(0, h - 210);
+        ctx.bezierCurveTo(w * 0.3, h - 225, w * 0.6, h - 140, w, h - 200); ctx.lineTo(w, h); ctx.fill();
+
+        // Неоновые блики на воде
+        ctx.strokeStyle = 'rgba(0, 243, 255, 0.12)'; ctx.lineWidth = 2; ctx.beginPath();
+        ctx.moveTo(w * 0.05, h - 185); ctx.lineTo(w * 0.35, h - 187); ctx.stroke();
+
+        // БОЛЬШОЙ ГАЛЕОН (Смещен сильно левее, увеличен размер, изменен силуэт, БЕЗ обводки)
+        ctx.save();
+        let shipX = w * 0.14; // Сдвинули намного левее
+        let shipY = h - 140 + Math.sin(globalAnimTime) * 3;
+        let shipRot = Math.cos(globalAnimTime) * 0.01;
+        ctx.translate(shipX, shipY);
+        ctx.rotate(shipRot);
+
+        // Корпус большого галеона (Массивный, без резких обводок)
+        ctx.fillStyle = '#162024';
+        ctx.beginPath();
+        ctx.moveTo(-75, -10); // Высокая корма сзади
+        ctx.lineTo(-40, 10);
+        ctx.lineTo(45, 10);   // Днище
+        ctx.quadraticCurveTo(75, 5, 85, -25); // Изогнутый нос корабля вперед и вверх
+        ctx.lineTo(60, -25);
+        ctx.lineTo(50, -8);
+        ctx.lineTo(-30, -8);
+        ctx.lineTo(-45, -25);
+        ctx.lineTo(-75, -25);
+        ctx.closePath();
+        ctx.fill();
+
+        // Три высокие мачты
+        ctx.strokeStyle = '#253036'; ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.moveTo(-35, -5); ctx.lineTo(-35, -80);  // Фок-мачта
+        ctx.moveTo(10, -5); ctx.lineTo(10, -105);   // Грот-мачта (очень высокая)
+        ctx.moveTo(50, -5); ctx.lineTo(50, -70);    // Бизань-мачта
+        ctx.stroke();
+
+        // Большие, раздутые аниме-паруса (Крем, без ярких обводок)
+        ctx.fillStyle = 'rgba(215, 235, 237, 0.88)';
+
+        // 1. Передний парус (большой)
+        ctx.beginPath(); ctx.moveTo(-35, -75); ctx.quadraticCurveTo(-60, -53, -35, -22); ctx.quadraticCurveTo(-47, -53, -35, -75); ctx.fill();
+        // 2. Главный центральный парус (огромный)
+        ctx.beginPath(); ctx.moveTo(10, -98); ctx.quadraticCurveTo(-22, -68, 10, -22); ctx.quadraticCurveTo(-4, -68, 10, -98); ctx.fill();
+        // 3. Задний косой парус
+        ctx.beginPath(); ctx.moveTo(50, -65); ctx.quadraticCurveTo(30, -45, 50, -20); ctx.quadraticCurveTo(42, -45, 50, -65); ctx.fill();
+        ctx.restore();
+
+        // Морской набережный берег
+        ctx.fillStyle = '#123846'; ctx.beginPath();
+        ctx.moveTo(0, h - 105); ctx.bezierCurveTo(w * 0.4, h - 115, w * 0.7, h - 90, w, h - 100);
+        ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+        // СТИЛЬНАЯ КОФЕЙНЯ-ЧАЙНАЯ
+        let shopX = w - 260; let shopY = h - 250;
+        ctx.fillStyle = '#1a2730'; ctx.fillRect(shopX, shopY, 190, 150);
+        ctx.fillStyle = '#fcebb6'; ctx.fillRect(shopX + 25, shopY + 50, 80, 60);
+        ctx.strokeStyle = '#1a2730'; ctx.lineWidth = 3; ctx.strokeRect(shopX + 25, shopY + 50, 80, 60);
+        ctx.beginPath(); ctx.moveTo(shopX + 65, shopY + 50); ctx.lineTo(shopX + 65, shopY + 110); ctx.stroke();
+        ctx.fillStyle = '#ff7675'; ctx.fillRect(shopX - 15, shopY, 220, 15);
+        ctx.fillStyle = '#00f3ff'; ctx.fillRect(shopX - 15, shopY + 15, 220, 4);
+        ctx.fillStyle = '#34495e'; ctx.fillRect(shopX + 130, shopY + 50, 40, 100);
+        ctx.fillStyle = '#fcebb6'; ctx.fillRect(shopX + 140, shopY + 60, 20, 30);
+
+        // Вывеска COFFEE & TEA
+        ctx.save(); ctx.fillStyle = '#0d2530'; ctx.fillRect(shopX + 25, shopY - 35, 140, 25);
+        ctx.strokeStyle = '#00f3ff'; ctx.lineWidth = 1.5; ctx.strokeRect(shopX + 25, shopY - 35, 140, 25);
+        ctx.fillStyle = '#00f3ff'; ctx.shadowBlur = 5; ctx.shadowColor = '#00f3ff';
+        ctx.font = 'bold 10px sans-serif'; ctx.textAlign = 'center';
+        ctx.fillText('COFFEE & TEA', shopX + 95, shopY - 19); ctx.restore();
+
+        // Логика и отрисовка котика
+        cat.x += cat.speed * cat.dir;
+        if (cat.x > w - 320 || cat.x < w * 0.45) cat.dir *= -1;
+        cat.animFrame += 0.05;
+        let tailWobble = Math.sin(cat.animFrame) * 4;
+
+        ctx.fillStyle = '#e6f7f8'; ctx.fillRect(cat.x, cat.y, 22, 14);
+        ctx.fillRect(cat.x + (cat.dir > 0 ? 16 : -6), cat.y - 10, 12, 12);
+        ctx.fillStyle = '#ff7675'; ctx.beginPath();
+        if (cat.dir > 0) {
+            ctx.moveTo(cat.x + 18, cat.y - 10); ctx.lineTo(cat.x + 22, cat.y - 16); ctx.lineTo(cat.x + 25, cat.y - 10);
+        } else {
+            ctx.moveTo(cat.x - 4, cat.y - 10); ctx.lineTo(cat.x, cat.y - 16); ctx.lineTo(cat.x + 4, cat.y - 10);
+        }
+        ctx.fill();
+        ctx.strokeStyle = '#e6f7f8'; ctx.lineWidth = 3; ctx.beginPath();
+        ctx.moveTo(cat.x + (cat.dir > 0 ? 0 : 22), cat.y + 5);
+        ctx.quadraticCurveTo(cat.x + (cat.dir > 0 ? -10 : 32), cat.y - 5 + tailWobble, cat.x + (cat.dir > 0 ? -8 : 30), cat.y - 12);
+        ctx.stroke();
+
+        particles.forEach(p => { p.update(); p.draw(); });
+
+        requestAnimationFrame(drawScene);
+    }
+    drawScene();
+
+
+    // =========================================================================
+    // БЛОК 4: УПРАВЛЕНИЕ СОСТОЯНИЕМ (LOCALSTORAGE & STATE)
+    // =========================================================================
+    const STORAGE_KEY = 'anime_marine_identity_cards';
+    const LIFE_HOURS =  103;
+
+    class StateManager {
+    constructor() {
+        this.cards = this.load();
+        this.activeCardIndex = 0;
+        this.isFrozen = localStorage.getItem('cs_system_frozen') === 'true';
+        this.freezeTime = Number(localStorage.getItem('cs_freeze_time')) || 0;
+    }
+
+    // ВСТАВЛЯЙ СТРОГО СЮДА:
+    toggleFreeze() {
+        this.isFrozen = !this.isFrozen;
+        const now = Date.now();
+
+        if (this.isFrozen) {
+            // Замораживаем: Запоминаем точную секунду начала зимы
+            this.freezeTime = now;
+            localStorage.setItem('cs_freeze_time', String(this.freezeTime));
+        } else {
+            // Размораживаем: Считаем, сколько миллисекунд длилась зима
+            const duration = now - this.freezeTime;
+
+            // Сдвигаем время взаимодействия всех живых карточек вперед на время простоя!
+            this.cards.forEach(card => {
+                if (!card.isInfinite && card.lastInteractionTime) {
+                    card.lastInteractionTime += duration;
+                }
+            });
+            this.freezeTime = 0;
+            localStorage.removeItem('cs_freeze_time');
+        }
+
+        localStorage.setItem('cs_system_frozen', String(this.isFrozen));
+        this.save();
+    }
+
+
+
+    load() {
+    // 1. Загружаем активные карточки целей
+    const raw = localStorage.getItem(STORAGE_KEY);
+    let parsed = [];
+    if (raw) {
+        try {
+            parsed = JSON.parse(raw);
+            const now = Date.now();
+            parsed.forEach(card => {
+                // ФИКС NaN: Защита на случай, если поле streak отсутствует
+                card.streak = Number(card.streak) || 0;
+
+                const timePassed = now - card.lastInteractionTime;
+                const limitMs = LIFE_HOURS * 60 * 60 * 1000;
+
+                // Если 72 часа прошли — сбрасываем прогресс в ноль
+                if (timePassed >= limitMs && card.streak > 0) {
+                    card.streak = 0;
+                    card.habits.forEach(h => h.completed = false);
+                }
+            });
+        } catch(e) {
+            console.error("Ошибка чтения целей:", e);
+        }
+    }
+    this.cards = parsed;
+
+    // 2. ДОБАВЛЕНО: Загружаем архив достижений (Зал славы) из памяти
+    const rawArchive = localStorage.getItem(STORAGE_KEY + '_archive');
+    this.archive = [];
+    if (rawArchive) {
+        try {
+            this.archive = JSON.parse(rawArchive);
+        } catch(e) {
+            console.error("Ошибка чтения архива:", e);
+        }
+    }
+
+    return this.cards;
+}
+
+save() {
+    // ДОБАВЛЕНО: Сохраняем в localStorage и активные цели, и архив отдельно
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.cards));
+    localStorage.setItem(STORAGE_KEY + '_archive', JSON.stringify(this.archive || []));
+}
+
+addCard(goal, habitsArr, isInfinite = false) {
+        const now = Date.now();
+        const card = {
+            id: String(now),
+            goal: goal,
+            habits: habitsArr.map((text, i) => ({ id: `h_${now}_${i}`, text: text, completed: false })),
+            lastInteractionTime: now,
+            streak: 0,
+            isInfinite: isInfinite // Флаг: true для вечной карты, false для 48 часов
+        };
+        this.cards.unshift(card);
+        this.activeCardIndex = 0;
+        this.save();
+    }
+
+deleteCard(id) {
+    this.cards = this.cards.filter(x => x.id !== id);
+    if (this.activeCardIndex >= this.cards.length) {
+        this.activeCardIndex = Math.max(0, this.cards.length - 1);
+    }
+    this.save();
+}
+
+// ДОБАВЛЕНО: Метод переноса выполненной карточки в Зал славы
+archiveCard(id) {
+    const cardIndex = this.cards.findIndex(x => x.id === id);
+    if (cardIndex !== -1) {
+        const card = this.cards[cardIndex];
+
+        // Если массива архива еще нет в объекте — инициализируем его
+        if (!this.archive) this.archive = [];
+
+        // Добавляем запись в архив побед
+        this.archive.push({
+            id: card.id,
+            goal: card.goal,
+            streak: card.streak,
+            archivedAt: Date.now()
+        });
+
+        // Удаляем карточку из списка активных целей на экране
+        this.cards.splice(cardIndex, 1);
+
+        // Сдвигаем индекс активного слайда, чтобы интерфейс не завис
+        if (this.activeCardIndex >= this.cards.length) {
+            this.activeCardIndex = Math.max(0, this.cards.length - 1);
+        }
+
+        this.save();
+    }
+}
+
+// ДОБАВЛЕНО: Удаление достижения из Зала славы (если добавили случайно)
+deleteFromArchive(id) {
+    if (this.archive) {
+        this.archive = this.archive.filter(x => x.id !== id);
+        this.save();
+    }
+}
+
+ping(id) {
+    const card = this.cards.find(x => x.id === id);
+    if (card) {
+        card.streak = (Number(card.streak) || 0) + 1; // Безопасное прибавление дня
+        card.lastInteractionTime = Date.now();
+        card.habits.forEach(h => h.completed = false);
+        this.save();
+    }
+}
+
+// ЖЕЛЕЗНЫЙ МЕТОД ПЕРЕЗАПУСКА: Убедись, что он вставлен строго сюда!
+restart(id) {
+    const card = this.cards.find(x => x.id === id);
+    if (card) {
+        card.streak = 0; // сбрасываем счетчик дней дисциплины в 0
+        card.lastInteractionTime = Date.now(); // Перезапускаем таймер на полную шкалу
+        card.habits.forEach(h => h.completed = false); // Полностью очищаем галочки подзадач
+        this.save(); // Накатываем новые данные в localStorage
+    }
+}
+
+toggle(cardId, habId) {
+    const card = this.cards.find(x => x.id === cardId);
+    if (card) {
+        const habit = card.habits.find(y => y.id === habId);
+        if (habit) habit.completed = !habit.completed;
+        this.save();
+    }
+}
+
+
+
+getTimeLeft(id) {
+    const card = this.cards.find(x => x.id === id);
+    if (!card) return '00:00:00';
+
+    // ЕСЛИ КАРТОЧКА БЕССРОЧНАЯ — ОНА НИКОГДА НЕ СГОРИТ
+    if (card.isInfinite) return 'INFINITE PROTOCOL';
+
+    const maxMs = LIFE_HOURS * 60 * 60 * 1000;
+    const leftMs = maxMs - (Date.now() - (card.lastInteractionTime || Date.now()));
+    if (leftMs <= 0) return 'TIME EXPIRED';
+
+    const hrs = String(Math.floor(leftMs / (1000 * 60 * 60))).padStart(2, '0');
+    const mins = String(Math.floor((leftMs % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+    const secs = String(Math.floor((leftMs % (1000 * 60)) / 1000)).padStart(2, '0');
+    return `${hrs}:${mins}:${secs}`;
+}
+}
+
+
+    // Создаем глобальный объект состояния
+    const appState = new StateManager();
+
+
+    // =========================================================================
+    // БЛОК 5: АУДИО-МЕНЕДЖЕР (СИНТЕЗ ЗВУКОВ)
+    // =========================================================================
+    class AudioManager {
+        constructor() {
+            this.ctx = null;
+        }
+
+        // Инициализация аудио-контекста по первому клику пользователя
+        init() {
+            if (!this.ctx) {
+                this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        // Звук обычного тапа / клика / переключения карточки
+        playClick() {
+            this.init();
+            if (!this.ctx) return;
+
+            let osc = this.ctx.createOscillator();
+            let g = this.ctx.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(380, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(140, this.ctx.currentTime + 0.08);
+
+            g.gain.setValueAtTime(0.08, this.ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.08);
+
+            osc.connect(g);
+            g.connect(this.ctx.destination);
+
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.08);
+        }
+
+        // Звук успешного действия (подтверждение шага, создание карточки, продление +24ч)
+        playSuccess() {
+            this.init();
+            if (!this.ctx) return;
+
+            let osc = this.ctx.createOscillator();
+            let g = this.ctx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+            osc.frequency.setValueAtTime(600, this.ctx.currentTime + 0.06);
+
+            g.gain.setValueAtTime(0.12, this.ctx.currentTime);
+            g.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+
+            osc.connect(g);
+            g.connect(this.ctx.destination);
+
+            osc.start();
+            osc.stop(this.ctx.currentTime + 0.15);
+        }
+    }
+
+    // Создаем глобальный экземпляр звукового движка
+    const sound = new AudioManager();
+
+    // =========================================================================
+// БЛОК 6: МОДАЛЬНОЕ ОКНО И ВАЛИДАЦИЯ ВВОДА
+// =========================================================================
+const modalOverlay = document.getElementById('modalOverlay');
+const openModalBtn = document.getElementById('openModalBtn');
+const inputGoal = document.getElementById('inputGoal');
+const habitsContainer = document.getElementById('habitsContainer');
+const addHabitFieldBtn = document.getElementById('addHabitFieldBtn');
+const step1 = document.getElementById('step1');
+const step2 = document.getElementById('step2');
+
+// Открытие модального окна по кнопке Плюс
+openModalBtn.addEventListener('click', () => {
+    sound.playClick();
+    modalOverlay.classList.remove('hidden');
+    resetModal();
+});
+
+// Закрытие модального окна при клике на темный фон вокруг
+modalOverlay.addEventListener('click', (e) => {
+    if (e.target === modalOverlay) modalOverlay.classList.add('hidden');
+});
+
+// Сброс модального окна в стартовое состояние при каждом открытии
+function resetModal() {
+    inputGoal.value = '';
+    inputGoal.style.borderColor = '';
+    step1.classList.add('active');
+    step2.classList.remove('active');
+
+    // Генерируем ровно одно дефолтное поле для первой привычки
+    habitsContainer.innerHTML = `
+        <div class="habit-input-wrapper">
+            <input type="text" class="input-habit" placeholder="Ежедневное действие 1" autocomplete="off">
+        </div>
+    `;
+    addHabitFieldBtn.style.display = 'block';
+    setTimeout(() => inputGoal.focus(), 50);
+}
+
+// Переход от Шага 1 к Шагу 2
+function nextStep() {
+    if (inputGoal.value.trim() === '') {
+        inputGoal.style.borderColor = '#ff7675';
+        return;
+    }
+    inputGoal.style.borderColor = '';
+    sound.playSuccess();
+    step1.classList.remove('active');
+    step2.classList.add('active');
+
+    setTimeout(() => {
+        const initialInput = habitsContainer.querySelector('.input-habit');
+        if (initialInput) initialInput.focus();
+    }, 50);
+}
+
+document.getElementById('step1Next').addEventListener('click', nextStep);
+
+// Возврат со Второго шага на Первый шаг
+document.getElementById('step2Back').addEventListener('click', (e) => {
+    e.preventDefault();
+    sound.playClick();
+    step2.classList.remove('active');
+    step1.classList.add('active');
+    setTimeout(() => inputGoal.focus(), 50);
+});
+
+// Динамическое добавление новых полей привычек с лимитом в 3 штуки
+addHabitFieldBtn.addEventListener('click', () => {
+    sound.playClick();
+    let count = habitsContainer.querySelectorAll('.input-habit').length;
+
+    if (count < 3) {
+        let div = document.createElement('div');
+        div.className = 'habit-input-wrapper';
+        div.innerHTML = `<input type="text" class="input-habit" placeholder="Ежедневное действие ${count + 1}" autocomplete="off">`;
+        habitsContainer.appendChild(div);
+        div.querySelector('input').focus();
+    }
+
+    if (habitsContainer.querySelectorAll('.input-habit').length >= 3) {
+        addHabitFieldBtn.style.display = 'none';
+    }
+});
+
+// Сбор данных из всех полей и окончательное создание карточки
+function submitData() {
+    let goal = inputGoal.value.trim();
+    let inputs = habitsContainer.querySelectorAll('.input-habit');
+    let habits = Array.from(inputs).map(i => i.value.trim()).filter(text => text !== '');
+
+    // ИСПРАВЛЕНО: Правильная проверка на заполненность полей без падения JS
+    if (habits.length === 0) {
+        if (inputs.length > 0) inputs[0].style.borderColor = '#ff7675';
+        return;
+    }
+
+    // ДОБАВЛЕНО: Безопасно считываем состояние нашей новой кибер-плашки
+    const checkboxEl = document.getElementById('modalIsInfinite');
+    const isInfiniteChecked = checkboxEl ? checkboxEl.checked : false;
+
+    sound.playSuccess();
+
+    // ИСПРАВЛЕНО: Передаем флаг вечности третьим параметром в твою базу данных
+    appState.addCard(goal, habits, isInfiniteChecked);
+
+    // ДОБАВЛЕНО: Сбрасываем чекбокс в исходное состояние для будущих созданий
+    if (checkboxEl) {
+        checkboxEl.checked = false;
+    }
+
+    modalOverlay.classList.add('hidden'); // Закрываем окно
+
+    // Отрисовываем обновленный список карточек
+    if (typeof renderCards === 'function') {
+        renderCards();
+    }
+}
+
+
+document.getElementById('step2Submit').addEventListener('click', submitData);
+
+
+
+// =========================================================================
+// БЛОК 7: РЕНДЕРИНГ КАРТОЧЕК, ТАЙМЕРЫ И СЛАЙДЕР С БЫСТРЫМ УПРАВЛЕНИЕМ
+// =========================================================================
+const cardsSlider = document.getElementById('cardsSlider');
+
+function renderCards() {
+    cardsSlider.innerHTML = '';
+
+    // 1. Защитная проверка на полное отсутствие карточек целей
+    if (appState.cards.length === 0) {
+        cardsSlider.innerHTML = `
+            <div class="no-cards">
+                <p>У вас пока нет сформированных идентичностей.</p>
+                <p>Нажмите <span class="highlight">+</span>, чтобы начать путь.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // 2. Управление золотой пульсацией виджета кубка Зала славы в углу
+    const trophyWidget = document.getElementById('openArchiveBtn');
+    if (trophyWidget) {
+        if (appState.archive && appState.archive.length > 0) {
+            trophyWidget.classList.add('has-rewards');
+        } else {
+            trophyWidget.classList.remove('has-rewards');
+        }
+    }
+
+    // 3. Основной цикл перебора и генерации карточек из памяти
+    appState.cards.forEach((card, idx) => {
+        let cardEl = document.createElement('article');
+        cardEl.className = 'identity-card';
+
+        // Если активирована глобальная зима — вешаем ледяной класс блокировки кликов
+        if (appState.isFrozen) {
+            cardEl.classList.add('frozen-state');
+        }
+
+
+        // Позиционирование карт внутри слайдера стопки
+        if (idx === appState.activeCardIndex) cardEl.classList.add('active');
+        else if (idx === appState.activeCardIndex - 1) cardEl.classList.add('prev');
+        else if (idx === appState.activeCardIndex + 1) cardEl.classList.add('next');
+
+        // Рендеринг чекбоксов привычек с твоим крупным размером 2.1rem
+        let habitsHTML = card.habits.map(h => `
+            <li class="card-habit-item ${h.completed ? 'completed' : ''}" data-hid="${h.id}">
+                <input type="checkbox" ${h.completed ? 'checked' : ''} style="display:none;">
+                <span style="font-family: monospace; color: var(--teal-bright); margin-right: 1px; font-size: 3rem; line-height: 1; margin-top: 3px;">${h.completed ? '●' : '○'}</span>
+                <span>${h.text}</span>
+            </li>
+        `).join('');
+
+        let currentStreak = Number(card.streak) || 0;
+
+        // RPG-ШКАЛА ЭКСПОНЕНЦИАЛЬНОЙ ПРОГРЕССИИ РАНГОВ ДИСЦИПЛИНЫ
+        const progressionRanks = [
+            [0,  "● [ Обыватель: Путь закрыт ]"],
+            [1,  "● [ Пробужденный: Первый шаг ]"],
+            [2,  "● [ Искатель: Поиск ориентира ]"],
+            [3,  "● [ Послушник: Вход во вкус ]"],
+            [4,  "● [ Практикант: Набор инерции ]"],
+            [5,  "● [ Наблюдатель: Стабильный страйк ]"],
+            [7,  "■ [ Кибер-Рекрут: Неделя в строю ]"],
+            [9,  "■ [ Испытатель: Взлом рутины ]"],
+            [11, "■ [ Адепт: Уверенный фокус ]"],
+            [14, "■ [ Защитник Идентичности: 2 недели ]"],
+            [17, "◆ [ Смотритель Матрицы ]"],
+            [21, "◆ [ Самурай Воли: 3 недели ]"],
+            [25, "◆ [ Хранитель Бирюзовой Лагуны ]"],
+            [30, "◆ [ Архитектор Своего Я: 1 месяц ]"],
+            [36, "▲ [ Мастер Ментального Потока ]"],
+            [42, "▲ [ Монолит Личности ]"],
+            [50, "▲ [ Офлайн-Неприкасаемый ]"],
+            [60, "★ [ Разрушитель Иллюзий ]"],
+            [75, "★ [ Чистый Сигнал Вселенной ]"],
+            [90, "★ [ Кибер-Мастер Судьбы ]"],
+            [100, "👑 [ АБСОЛЮТНЫЙ КИБЕР-БОГ ЛИЧНОСТИ ]"]
+        ];
+
+        // Точный математический расчет текущего ранга на основе дней страйка
+        let rankText = progressionRanks[0][1];
+        for (let i = 0; i < progressionRanks.length; i++) {
+            if (currentStreak >= progressionRanks[i][0]) {
+                rankText = progressionRanks[i][1];
+            } else {
+                break;
+            }
+        }
+        // ЧИСЛОВОЙ РАСЧЕТ СГОРАНИЯ ПО МИЛЛИСЕКУНДАМ ВРЕМЕНИ
+        const maxMs = LIFE_HOURS * 60 * 60 * 1000;
+        const leftMs = maxMs - (Date.now() - (card.lastInteractionTime || Date.now()));
+        const isExpired = (leftMs <= 0);
+
+        if (isExpired) {
+            cardEl.classList.add('expired'); // Коралловая аварийная фиксация (БЕЗ вибрации)
+        } else {
+            cardEl.classList.remove('expired');
+        }
+
+        const progressPercent = Math.max(0, Math.min(100, (leftMs / maxMs) * 100));
+
+        // Начинка таймер-бокса: рестарт при сгорании или обычный плюс со шкалой
+
+  // ВЫЧИСЛЯЕМ ЦВЕТ ШКАЛЫ НА ОСНОВЕ ТВОЕГО progressPercent
+  let timerColor = 'var(--teal-bright)'; // Дефолтный бирюзовый
+  if (progressPercent > 80) {
+      timerColor = '#00ff66'; // Зеленый (100% - 81%)
+  } else if (progressPercent > 50) {
+      timerColor = '#00f3ff'; // Морская волна / Бирюза (80% - 51%)
+  } else if (progressPercent > 20) {
+      timerColor = '#ff9900'; // Оранжевый (50% - 21%)
+  } else {
+      timerColor = '#ff5252'; // Красный (20% и ниже)
+  }
+
+  let timerBoxHTML = '';
+
+  // 1. УСЛОВИЕ ДЛЯ ВЕЧНОЙ КАРТОЧКИ (Без таймера, полоски прогресса и без сгорания)
+  if (card.isInfinite) {
+      timerBoxHTML = `
+          <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;">
+              <div style="text-align: left;">
+                  <span class="timer-label" style="color: #597d8c;">Режим матрицы:</span>
+                  <div class="timer-countdown" style="color: var(--teal-bright); font-size: 1.15rem; font-family: 'Consolas', monospace; text-shadow: 0 0 5px rgba(0,243,255,0.3);">[ СТАТУС: АКТИВЕН БЕССРОЧНО ]</div>
+              </div>
+              <button class="btn-ping-action" data-cid="${card.id}">+ Плюс</button>
+          </div>
+      `;
+  }
+  // 2. УСЛОВИЕ ДЛЯ СГОРЕВШЕЙ КАРТОЧКИ (Твой оригинальный код сохранен)
+  else if (isExpired) {
+      timerBoxHTML = `
+          <div style="width: 100%; display: flex; flex-direction: column; gap: 4px; align-items: stretch;">
+              <div style="color: var(--accent-coral); font-family: monospace; font-size: 0.85rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: left; margin-bottom: 4px;">
+                  ⚠️ ПРОТОКОЛ НАРУШЕН: ВРЕМЯ ИСТЕКЛО
+              </div>
+              <button class="btn-restart-action" data-cid="${card.id}" style="width: 100%; background: rgba(255, 82, 82, 0.05); color: var(--accent-coral); border: 1px dashed var(--accent-coral); padding: 14px; border-radius: 8px; font-size: 1rem; font-weight: 900; font-family: 'Consolas', monospace; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer; min-height: 48px; transition: all 0.2s;">
+                  [ Начать заново с 0 ]
+              </button>
+          </div>
+      `;
+  }
+  // 3. УСЛОВИЕ ДЛЯ ЖИВОЙ КАРТОЧКИ (Твой оригинальный код с динамическим цветом полоски)
+  else {
+      timerBoxHTML = `
+          <div style="text-align: left;">
+              <span class="timer-label">Сгорит через:</span>
+              <!-- ДОБАВЛЕНО: Интеллектуальный контроль текста при заморозке времени -->
+              <div class="timer-countdown" id="rawtimer-${card.id}">${appState.isFrozen ? '[ СИСТЕМА ЗАМОРОЖЕНА ]' : appState.getTimeLeft(card.id)}</div>
+          </div>
+          <button class="btn-ping-action" data-cid="${card.id}">+ Плюс</button>
+          <div style="width: 100%; height: 8px; background: rgba(0, 243, 255, 0.04); position: absolute; bottom: 0; left: 0;">
+              <!-- Твоя сочная полоска 8px с динамическим цветом и плавными переходами -->
+              <div style="width: ${progressPercent}%; height: 100%; background: ${timerColor}; box-shadow: 0 0 8px ${timerColor}; transition: width 1s linear, background-color 0.4s ease, box-shadow 0.4s ease;"></div>
+          </div>
+      `;
+  }
+
+
+
+        // Сборка монолитного каркаса карточки с твоим глитч-заголовком цели
+        cardEl.innerHTML = `
+            <div class="card-header-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px;">
+                <div class="card-goal" style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <div style="font-size: 0.65rem; color: #597d8c; letter-spacing: 1px; font-family: monospace;">${rankText}</div>
+                        <span class="streak-badge" style="margin: 0; ${isExpired ? 'background:rgba(255,82,82,0.12); color:var(--accent-coral); border-color:rgba(255,82,82,0.3);' : ''}">+${currentStreak} дн</span>
+                    </div>
+
+                    <div style="display: flex; align-items: flex-start; gap: 14px; margin: 16px 0 10px 0; width: 100%; overflow: hidden;">
+                        <div style="color: var(--accent-coral); width: 24px; height: 24px; flex-shrink: 0; margin-top: 4px; filter: drop-shadow(0 0 5px var(--accent-coral));">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M12,2 L12,6 M12,18 L12,22 M2,12 L6,12 M18,12 L22,12" /><path d="M18.36,5.64 L15.53,8.46 M8.46,15.53 L5.64,18.36 M5.64,5.64 L8.46,8.46 M15.53,15.53 L18.36,18.36" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <div class="cyber-glitch-target" data-text="${card.goal}" style="font-size: 1.65rem; font-weight: 900; line-height: 1.2; font-family: Impact, 'Arial Black', sans-serif; text-transform: uppercase; letter-spacing: 1.5px; white-space: normal; word-break: normal; overflow-wrap: break-word; hyphens: none; flex: 1; max-width: calc(100% - 38px); ${isExpired ? 'text-shadow: 0 0 6px rgba(255,82,82,0.2);' : ''}">
+                            ${card.goal}
+                        </div>
+                    </div>
+                </div>
+                <div class="desktop-delete-btn" style="flex-shrink: 0; padding-top: 2px;">
+                    <button class="btn-delete-card" data-cid="${card.id}" title="Удалить идентичность">&times;</button>
+                </div>
+            </div>
+
+            <div class="card-timer-box" style="position: relative; overflow: hidden; padding: 12px 15px 18px 15px; display: flex; justify-content: space-between; align-items: center; gap: 15px; ${isExpired ? 'border-color: rgba(255,82,82,0.2); background:rgba(255,82,82,0.01);' : ''}">
+                ${timerBoxHTML}
+            </div>
+
+            <ul class="card-habits-list">${habitsHTML}</ul>
+
+            <!-- Благородная янтарно-золотая кнопка триумфа завершения пути -->
+            <button class="btn-archive-complete" data-cid="${card.id}" ${isExpired ? 'style="display:none;"' : ''}>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px; flex-shrink: 0; filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.4));">
+                    <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7z"></path><path d="M5 20h14" stroke-width="2.5"></path>
+                </svg>
+                <span>[ Статус: Цель Завершена ]</span>
+            </button>
+            <button class="mobile-delete-bar" data-cid="${card.id}">[ Стереть идентичность ]</button>
+        `;
+        // 1. УМНОЕ РАСПРЕДЕЛЕНИЕ КЛИКОВ ДЕЙСТВИЯ (Сгорание vs Продление)
+        if (isExpired) {
+            // Клик по коралловой кнопке перезапуска
+            cardEl.querySelector('.btn-restart-action').addEventListener('click', (e) => {
+                e.stopPropagation();
+                sound.playSuccess();
+                appState.restart(card.id); // Сбрасываем прогресс в StateManager в 0 дней
+                renderCards(); // Мгновенно возвращаем карточку в бирюзовый строй
+            });
+        } else {
+            // Клик по кнопке «+ Плюс» продления таймера
+            cardEl.querySelector('.btn-ping-action').addEventListener('click', (e) => {
+                e.stopPropagation();
+                sound.playSuccess();
+                appState.ping(card.id);
+                renderCards();
+            });
+
+            // Клик по золотой кнопке триумфа (Праздничное окно достижений с Focus Trap)
+            cardEl.querySelector('.btn-archive-complete').addEventListener('click', (e) => {
+                e.stopPropagation(); sound.playClick();
+                const triumphOverlay = document.getElementById('triumphOverlay');
+                const triumphGoalName = document.getElementById('triumphGoalName');
+                const triumphCancel = document.getElementById('triumphCancel');
+                const triumphConfirm = document.getElementById('triumphConfirm');
+
+                if (!triumphOverlay || !triumphGoalName) return;
+                triumphGoalName.textContent = `"${card.goal}"`;
+                triumphOverlay.classList.remove('hidden');
+                setTimeout(() => triumphCancel.focus(), 30);
+
+                const onCancel = () => { sound.playClick(); triumphOverlay.classList.add('hidden'); cleanup(); };
+                const onConfirm = () => {
+    sound.playSuccess();
+    appState.archiveCard(card.id);
+    triumphOverlay.classList.add('hidden');
+
+    // ЗАПУСК НЕЗАВИСИМОГО ЭФФЕКТА МАТРИЦЫ
+    if (typeof startMatrixTriumphEffect === 'function') {
+        startMatrixTriumphEffect();
+    }
+
+    renderCards();
+    cleanup();
+};
+
+
+                const onKeyDown = (event) => {
+                    if (event.key === 'Escape') { event.preventDefault(); onCancel(); return; }
+                    if (event.key === 'Tab') {
+                        const activeEl = document.activeElement;
+                        if (event.shiftKey) { if (activeEl === triumphCancel) { event.preventDefault(); triumphConfirm.focus(); } }
+                        else { if (activeEl === triumphConfirm) { event.preventDefault(); triumphCancel.focus(); } }
+                    }
+                    if (event.key === 'Enter') { event.preventDefault(); if (document.activeElement === triumphConfirm) onConfirm(); else onCancel(); }
+                };
+
+                function cleanup() { triumphCancel.removeEventListener('click', onCancel); triumphConfirm.removeEventListener('click', onConfirm); window.removeEventListener('keydown', onKeyDown); }
+                triumphCancel.addEventListener('click', onCancel); triumphConfirm.addEventListener('click', onConfirm); window.addEventListener('keydown', onKeyDown);
+            });
+        }
+
+        // 2. Логика удаления карточки с экрана (Кастомное окно варнинга с Focus Trap)
+        const deleteAction = (e) => {
+            e.stopPropagation(); sound.playClick();
+            const warningOverlay = document.getElementById('warningOverlay');
+            if (warningOverlay) {
+                const warningCancel = document.getElementById('warningCancel');
+                const warningConfirm = document.getElementById('warningConfirm');
+
+                warningOverlay.classList.remove('hidden');
+                setTimeout(() => warningCancel.focus(), 30);
+
+                const onCancel = () => { sound.playClick(); warningOverlay.classList.add('hidden'); cleanup(); };
+                const onConfirm = () => { sound.playSuccess(); appState.deleteCard(card.id); warningOverlay.classList.add('hidden'); renderCards(); cleanup(); };
+
+                const onKeyDownInner = (event) => {
+                    if (event.key === 'Escape') { event.preventDefault(); onCancel(); return; }
+                    if (event.key === 'Tab') {
+                        const activeEl = document.activeElement;
+                        if (event.shiftKey) { if (activeEl === warningCancel) { event.preventDefault(); warningConfirm.focus(); } }
+                        else { if (activeEl === warningConfirm) { event.preventDefault(); warningCancel.focus(); } }
+                    }
+                    if (event.key === 'Enter') { event.preventDefault(); if (document.activeElement === warningConfirm) onConfirm(); else onCancel(); }
+                };
+
+                function cleanup() { warningCancel.removeEventListener('click', onCancel); warningConfirm.removeEventListener('click', onConfirm); window.removeEventListener('keydown', onKeyDownInner); }
+                warningCancel.addEventListener('click', onCancel); warningConfirm.addEventListener('click', onConfirm); window.addEventListener('keydown', onKeyDownInner);
+            }
+        };
+
+        const dBtn = cardEl.querySelector('.btn-delete-card');
+        if (dBtn) dBtn.addEventListener('click', deleteAction);
+        const mBtn = cardEl.querySelector('.mobile-delete-bar');
+        if (mBtn) mBtn.addEventListener('click', deleteAction);
+
+        // 3. Клик по привычкам (чекбоксам подзадач)
+        cardEl.querySelectorAll('.card-habit-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault(); sound.playSuccess();
+                appState.toggle(card.id, item.getAttribute('data-hid'));
+                renderCards();
+            });
+        });
+
+        cardsSlider.appendChild(cardEl);
+    });
+}
+
+
+
+
+
+// Ежесекундное тиканье таймера и автоматический СБРОС СТРАЙКА при достижении нуля
+setInterval(() => {
+
+    if (appState.isFrozen) return;
+    if (appState.cards.length === 0) return;
+    let expired = false;
+
+    appState.cards.forEach(c => {
+        let el = document.getElementById(`rawtimer-${c.id}`);
+
+        // Считаем чистые миллисекунды до сгорания карточки
+        const maxMs = LIFE_HOURS * 60 * 60 * 1000;
+        const leftMs = maxMs - (Date.now() - (c.lastInteractionTime || Date.now()));
+
+        if (el) {
+            el.textContent = appState.getTimeLeft(c.id);
+        }
+
+        // Если время ушло в минус, а карточка еще не сброшена в 0
+        if (leftMs <= 0 && c.streak > 0) {
+            expired = true;
+        }
+    });
+
+    if (expired) {
+        appState.cards = appState.load();
+        renderCards(); // Мгновенно переключаем карту в режим рестарта
+    }
+}, 1000);
+
+
+
+
+
+// Функция переключения слайдера (влево / вправо / вверх / вниз)
+function moveSlider(dir) {
+    let next = appState.activeCardIndex + dir;
+    if (next >= 0 && next < appState.cards.length) {
+        sound.playClick();
+        appState.activeCardIndex = next;
+        renderCards();
+    }
+}
+
+// Управление колесиком мыши (Scroll)
+window.addEventListener('wheel', (e) => {
+    if (modalOverlay.classList.contains('hidden')) moveSlider(e.deltaY > 0 ? 1 : -1);
+}, { passive: true });
+
+// Управление стрелочками клавиатуры
+window.addEventListener('keydown', (e) => {
+    if (!modalOverlay.classList.contains('hidden')) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') moveSlider(1);
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') moveSlider(-1);
+});
+
+// Горячие клавиши модального окна (Enter / Tab)
+modalOverlay.addEventListener('keydown', (e) => {
+    if (modalOverlay.classList.contains('hidden')) return;
+
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        if (step1.classList.contains('active')) nextStep();
+        else if (step2.classList.contains('active')) submitData();
+    }
+
+    if (e.key === 'Tab' && step2.classList.contains('active')) {
+        let inputs = Array.from(habitsContainer.querySelectorAll('.input-habit'));
+        if (document.activeElement === inputs[inputs.length - 1] && inputs.length < 3) {
+            e.preventDefault();
+            addHabitFieldBtn.click();
+        }
+    }
+});
+
+// Включение аудио-контекста по первому клику на экран
+const unlockAudio = () => {
+    sound.init();
+    window.removeEventListener('click', unlockAudio);
+    window.removeEventListener('keydown', unlockAudio);
+};
+window.addEventListener('click', unlockAudio);
+window.addEventListener('keydown', unlockAudio);
+
+// Первичный запуск отрисовки при загрузке страницы
+renderCards();
+
+
+// =========================================================================
+// МОБИЛЬНОЕ УПРАВЛЕНИЕ: ОБРАБОТКА СВАЙПОВ ПАЛЬЦЕМ (TOUCH EVENTS)
+// =========================================================================
+let touchStartX = 0;
+let touchStartY = 0;
+
+cardsSlider.addEventListener('touchstart', (e) => {
+    if (!modalOverlay.classList.contains('hidden')) return;
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+}, { passive: true });
+
+cardsSlider.addEventListener('touchend', (e) => {
+    if (!modalOverlay.classList.contains('hidden')) return;
+    const touchEndX = e.changedTouches[0].screenX;
+    const touchEndY = e.changedTouches[0].screenY;
+
+    const diffX = touchStartX - touchEndX;
+    const diffY = touchStartY - touchEndY;
+
+    // Срабатывает только если горизонтальный свайп сильнее вертикального шума
+    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+        if (diffX > 0) moveSlider(1);  // Свайп влево -> следующая карточка
+        else moveSlider(-1);           // Свайп вправо -> предыдущая карточка
+    }
+}, { passive: true });
+
+// =========================================================================
+// МОБИЛЬНОЕ УПРАВЛЕНИЕ: КЛИКИ ПО БОКОВЫМ СТРЕЛОЧКАМ СЛАЙДЕРА
+// =========================================================================
+document.getElementById('mobileArrowLeft').addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Листаем к предыдущей карточке (влево)
+    moveSlider(-1);
+});
+
+document.getElementById('mobileArrowRight').addEventListener('click', (e) => {
+    e.stopPropagation();
+    // Листаем к следующей карточке (вправо)
+    moveSlider(1);
+});
+
+// =========================================================================
+// ЛОГИКА ОКНА АРХИВА (ЗАЛ СЛАВЫ)
+// =========================================================================
+
+// =========================================================================
+// БЕЗОПАСНАЯ ИНИЦИАЛИЗАЦИЯ И СЛУШАТЕЛИ ДЛЯ ОКНА АРХИВА (ЗАЛ СЛАВЫ)
+// =========================================================================
+
+// Функция отрисовки списка выполненных целей внутри Зала Славы
+function renderArchive() {
+    const container = document.getElementById('archiveContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    // Если в архиве приложения пока пусто — выводим красивую заглушку
+    if (!appState.archive || appState.archive.length === 0) {
+        container.innerHTML = `
+            <p style="text-align: center; color: #597d8c; font-family: monospace; font-size: 0.9rem; padding: 30px 0; margin: 0; line-height: 1.4;">
+                Ваш Зал славы пока пуст.<br>Выкуйте свою первую победу!
+            </p>
+        `;
+        return;
+    }
+
+    // Рендерим каждую победную карточку в архивный контейнер
+    appState.archive.forEach(item => {
+        let div = document.createElement('div');
+        div.className = 'archive-item';
+        div.innerHTML = `
+            <div style="display: flex; flex-direction: column; gap: 4px; text-align: left; max-width: calc(100% - 40px); overflow: hidden;">
+                <span style="color: #ffd700; font-family: Impact, 'Arial Black', sans-serif; text-transform: uppercase; font-size: 1.15rem; letter-spacing: 0.5px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                    ${item.goal}
+                </span>
+                <span style="font-family: monospace; color: #597d8c; font-size: 0.75rem; letter-spacing: 0.5px;">
+                    УДЕРЖАНО ДНЕЙ: +${item.streak}
+                </span>
+            </div>
+            <button class="archive-del-btn" style="background: none; border: none; color: var(--accent-coral); font-size: 1.4rem; cursor: pointer; font-weight: bold; padding: 5px; line-height: 1;" title="Удалить достижение">&times;</button>
+        `;
+
+        // Клик по крестику внутри архива — кастомное окно сжигания победы (Гарантированный Focus Trap)
+        div.querySelector('.archive-del-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            sound.playClick();
+
+            const archWarning = document.getElementById('archiveWarningOverlay');
+            const archCancel = document.getElementById('archiveWarningCancel');
+            const archConfirm = document.getElementById('archiveWarningConfirm');
+
+            if (!archWarning) return;
+
+            archWarning.classList.remove('hidden');
+
+            // Мгновенно фокусируемся на кнопке "Назад"
+            setTimeout(() => archCancel.focus(), 30);
+
+            const onCancel = () => {
+                sound.playClick();
+                archWarning.classList.add('hidden');
+                cleanup();
+            };
+
+            const onConfirm = () => {
+                sound.playSuccess();
+                appState.deleteFromArchive(item.id);
+                archWarning.classList.add('hidden');
+                renderArchive(); // Перерисовываем Зал славы
+                if (typeof renderCards === 'function') renderCards(); // Обновляем кубок
+                cleanup();
+            };
+
+            // Полный клавиатурный контроль архивного варнинга
+            const onKeyDown = (event) => {
+                if (event.key === 'Escape') {
+                    event.preventDefault();
+                    onCancel();
+                    return;
+                }
+
+                if (event.key === 'Tab') {
+                    const activeEl = document.activeElement;
+                    if (event.shiftKey) {
+                        if (activeEl === archCancel) {
+                            event.preventDefault();
+                            archConfirm.focus();
+                        }
+                    } else {
+                        if (activeEl === archConfirm) {
+                            event.preventDefault();
+                            archCancel.focus();
+                        }
+                    }
+                }
+
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    if (document.activeElement === archConfirm) {
+                        onConfirm();
+                    } else {
+                        onCancel(); // Безопасный сброс
+                    }
+                }
+            };
+
+            function cleanup() {
+                archCancel.removeEventListener('click', onCancel);
+                archConfirm.removeEventListener('click', onConfirm);
+                window.removeEventListener('keydown', onKeyDown);
+            }
+
+            archCancel.addEventListener('click', onCancel);
+            archConfirm.addEventListener('click', onConfirm);
+            window.addEventListener('keydown', onKeyDown);
+        });
+
+
+
+        container.appendChild(div);
+    });
+}
+
+// Инициализируем события только ПОСЛЕ полной загрузки структуры документа браузером
+document.addEventListener("DOMContentLoaded", () => {
+    const btnOpen = document.getElementById('openArchiveBtn');
+    const btnClose = document.getElementById('closeArchiveBtn');
+    const overlay = document.getElementById('archiveOverlay');
+
+    if (btnOpen && overlay) {
+        btnOpen.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (typeof sound !== 'undefined' && sound.playClick) sound.playClick();
+            overlay.classList.remove('hidden');
+            renderArchive(); // Обновляем список побед при открытии
+        });
+    } else {
+        console.error("Критическая ошибка: Элементы 'openArchiveBtn' или 'archiveOverlay' не найдены в HTML!");
+    }
+
+    if (btnClose && overlay) {
+        btnClose.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (typeof sound !== 'undefined' && sound.playClick) sound.playClick();
+            overlay.classList.add('hidden');
+        });
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                if (typeof sound !== 'undefined' && sound.playClick) sound.playClick();
+                overlay.classList.add('hidden');
+            }
+        });
+    }
+});
+
+// =========================================================================
+// ИСПРАВЛЕННЫЕ ГЛОБАЛЬНЫЕ ГОРЯЧИЕ КЛАВИШИ (DELETE И +) С КОНТРОЛЕМ E.CODE
+// =========================================================================
+window.addEventListener('keydown', (e) => {
+    // ЗАЩИТА: Если пользователь сейчас вводит текст в инпут, полностью блокируем горячие клавиши
+    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA')) {
+        return;
+    }
+
+    // Проверяем, есть ли вообще активные карточки в приложении на данный момент
+    if (!appState.cards || appState.cards.length === 0) return;
+
+    // Получаем данные карточки, которая сейчас открыта в слайдере
+    const activeCard = appState.cards[appState.activeCardIndex];
+    if (!activeCard) return;
+
+    // Проверяем, открыто ли сейчас какое-либо модальное окно страницы
+    const isModalOpen = !document.getElementById('modalOverlay').classList.contains('hidden') ||
+                        !document.getElementById('archiveOverlay').classList.contains('hidden') ||
+                        !document.getElementById('warningOverlay').classList.contains('hidden') ||
+                        !document.getElementById('triumphOverlay').classList.contains('hidden') ||
+                        !document.getElementById('archiveWarningOverlay').classList.contains('hidden');
+
+    // 1. КЛАВИША "DELETE" (Удаление активной карточки)
+    if (e.key === 'Delete' || e.key === 'Del' || e.code === 'Delete') {
+        if (!isModalOpen) {
+            e.preventDefault();
+            sound.playClick();
+
+            const warningOverlay = document.getElementById('warningOverlay');
+            if (warningOverlay) {
+                const warningCancel = document.getElementById('warningCancel');
+                const warningConfirm = document.getElementById('warningConfirm');
+
+                warningOverlay.classList.remove('hidden');
+                setTimeout(() => warningCancel.focus(), 30);
+
+                const onCancel = () => { sound.playClick(); warningOverlay.classList.add('hidden'); cleanup(); };
+                const onConfirm = () => { sound.playSuccess(); appState.deleteCard(activeCard.id); warningOverlay.classList.add('hidden'); renderCards(); cleanup(); };
+
+                const onKeyDownInner = (event) => {
+                    if (event.key === 'Escape') { event.preventDefault(); onCancel(); }
+                };
+
+                function cleanup() {
+                    warningCancel.removeEventListener('click', onCancel);
+                    warningConfirm.removeEventListener('click', onConfirm);
+                    window.removeEventListener('keydown', onKeyDownInner);
+                }
+
+                warningCancel.addEventListener('click', onCancel);
+                warningConfirm.addEventListener('click', onConfirm);
+                window.addEventListener('keydown', onKeyDownInner);
+            }
+        }
+    }
+
+    // 2. КЛАВИША "+" (Пинг / Плюс для активной карточки)
+    // Проверяем все возможные варианты: символ плюс, e.code для основной клавиатуры и Numpad
+    if (e.key === '+' || e.code === 'NumpadAdd' || (e.shiftKey && e.code === 'Equal') || e.key === '=') {
+        if (!isModalOpen) {
+            e.preventDefault();
+            sound.playSuccess(); // Проигрываем фирменный ретро-звук
+            appState.ping(activeCard.id); // Продлеваем таймер и начисляем день страйка в базу
+            renderCards(); // Перерисовываем карточку с обновленными цифрами
+        }
+    }
+});
+
+
+
+
+    </script>
+
+    <!-- Кастомное окно предупреждения (Варнинг) -->
+    <div id="warningOverlay" class="modal-overlay hidden">
+        <div class="modal-window" style="max-width: 400px !important;">
+            <div class="modal-layout-wrapper" style="flex-direction: column; text-align: center; gap: 15px;">
+
+                <!-- SVG Знак предупреждения (Восклицательный знак в ромбе) -->
+                <div style="color: var(--accent-coral); width: 70px; height: 70px; margin-bottom: 5px;">
+                    <svg viewBox="0 0 100 100" fill="none" stroke="currentColor">
+                        <path d="M50,10 L90,50 L50,90 L10,50 Z" stroke-width="2" stroke-linejoin="round"/>
+                        <line x1="50" y1="35" x2="50" y2="60" stroke-width="3" stroke-linecap="round"/>
+                        <circle cx="50" cy="72" r="2" fill="currentColor"/>
+                    </svg>
+                </div>
+
+                <div class="modal-content-side">
+                    <h3 style="color: #fff; margin-bottom: 8px;">Стереть идентичность?</h3>
+                    <p style="color: #7294a1; font-size: 0.9rem; line-height: 1.4;">Вы уверены, что хотите безвозвратно удалить эту цель и сбросить весь прогресс дней?</p>
+
+                    <div class="modal-buttons" style="justify-content: center; margin-top: 20px; gap: 15px;">
+                        <button id="warningCancel" class="btn-back" style="padding: 10px 22px;">Назад</button>
+                        <button id="warningConfirm" class="btn-submit" style="background: var(--accent-coral); color: #fff; padding: 10px 22px;">Стереть</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДОСТИГНУТЫХ ЦЕЛЕЙ (ЗАЛ СЛАВЫ) -->
+    <div id="archiveOverlay" class="modal-overlay hidden">
+        <div class="modal-window" style="max-width: 500px !important;">
+            <div class="modal-layout-wrapper" style="flex-direction: column; gap: 15px; position: relative;">
+
+                <!-- Кнопка закрытия окна (Крестик) -->
+                <button id="closeArchiveBtn" style="position: absolute; top: -10px; right: -5px; background: none; border: none; color: #597d8c; font-size: 1.5rem; cursor: pointer;">&times;</button>
+
+                <!-- Большой красивый кибер-кубок -->
+                <div style="color: #ffd700; width: 80px; height: 80px; margin: 0 auto; filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.4));">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                        <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                        <path d="M4 22h16"></path>
+                        <path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path>
+                        <path d="M12 2a6 6 0 0 1 6 6v3.5c0 3.3-2.7 5.5-6 5.5s-6-2.2-6-5.5V8a6 6 0 0 1 6-6z" fill="currentColor" fill-opacity="0.1"></path>
+                    </svg>
+                </div>
+
+                <h3 style="color: #fff; text-align: center; text-transform: uppercase; letter-spacing: 1px; font-family: Impact, sans-serif; font-size: 1.4rem; margin: 0;">Архив Достижений</h3>
+                <!-- Кнопка сохранения достижений на компьютер -->
+
+<button id="downloadArchiveBtn" style="background: rgba(0, 243, 255, 0.05); color: #9abcbe;  padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 0.8rem; font-weight: bold; width: 100%; margin-top: 5px; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;">
+  <svg xmlns="http://w3.org" viewBox="0 0 100 100" fill="none" stroke="#00ff66" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; flex-shrink: 0; filter: drop-shadow(0 0 8px rgba(0, 255, 102, 0.4));">
+    <!-- Внутренний статичный полигональный ромб зеленого цвета -->
+    <path d="M50 20 L80 50 L50 80 L20 50 Z" stroke-width="4" fill="#00ff66" fill-opacity="0.08" />
+
+    <!-- Перекрестие системных векторов -->
+    <line x1="50" y1="4" x2="50" y2="14" stroke-width="3" opacity="0.8" />
+    <line x1="50" y1="86" x2="50" y2="96" stroke-width="3" opacity="0.8" />
+    <line x1="4" y1="50" x2="14" y2="50" stroke-width="3" opacity="0.8" />
+    <line x1="86" y1="50" x2="96" y2="50" stroke-width="3" opacity="0.8" />
+
+    <!-- Жирная центральная точка ядра данных -->
+    <circle cx="50" cy="50" r="4.5" fill="#00ff66" filter="drop-shadow(0 0 5px #00ff66)" />
+</svg>
+   СОХРАНИТЬ АЧИВКИ НА КОМПЬЮТЕР (CSV)
+</button>
+
+                <!-- Контейнер, куда скрипт будет выводить карточки побед -->
+                <div id="archiveContainer" style="width: 100%; max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-top: 10px; padding-right: 5px;">
+                    <!-- Сюда JS вставит выполненные цели -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Кастомное окно подтверждения для Зала славы -->
+    <div id="archiveWarningOverlay" class="modal-overlay hidden" style="z-index: 200;">
+        <div class="modal-window" style="max-width: 380px !important; border-color: rgba(255, 82, 82, 0.3);">
+            <div class="modal-layout-wrapper" style="flex-direction: column; text-align: center; gap: 12px;">
+
+                <!-- SVG Иконка Огня / Сжигания достижения -->
+                <div style="color: var(--accent-coral); width: 60px; height: 60px; margin: 0 auto; filter: drop-shadow(0 0 8px rgba(255, 82, 82, 0.3));">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                    </svg>
+                </div>
+
+                <div class="modal-content-side">
+                    <h3 style="color: #fff; font-size: 1.25rem; margin-bottom: 6px; font-family: Impact, sans-serif; text-transform: uppercase; letter-spacing: 0.5px;">Сжечь достижение?</h3>
+                    <p style="color: #7294a1; font-size: 0.85rem; line-height: 1.4; margin: 0;">Вы уверены, что хотите окончательно стереть эту победу из истории Зала славы?</p>
+
+                    <div class="modal-buttons" style="justify-content: center; margin-top: 16px; gap: 12px;">
+                        <button id="archiveWarningCancel" class="btn-back" style="padding: 8px 18px; font-size: 0.8rem;">Назад</button>
+                        <button id="archiveWarningConfirm" class="btn-submit" style="background: var(--accent-coral); color: #fff; padding: 8px 18px; font-size: 0.8rem;">Сжечь</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <!-- Кастомное окно триумфа при достижении глобальной цели -->
+    <div id="triumphOverlay" class="modal-overlay hidden" style="z-index: 250;">
+        <div class="modal-window" style="max-width: 440px !important; border-color: rgba(255, 215, 0, 0.4);">
+            <div class="modal-layout-wrapper" style="flex-direction: column; text-align: center; gap: 15px; padding: 10px 5px;">
+
+                <!-- SVG Сияющая Медаль Триумфа с анимацией золотого свечения -->
+                <div style="color: #ffd700; width: 75px; height: 75px; margin: 0 auto; filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.5));">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="7" fill="currentColor" fill-opacity="0.1"></circle>
+                        <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
+                    </svg>
+                </div>
+
+                <div class="modal-content-side" style="width: 100%;">
+                    <h3 style="color: #fff; font-size: 1.4rem; margin-bottom: 8px; font-family: Impact, sans-serif; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 8px rgba(255, 215, 0, 0.2);">Путь завершен!</h3>
+
+                    <!-- Сюда динамически подставится имя твоей цели -->
+                    <p id="triumphGoalName" style="color: #00f3ff; font-family: 'Consolas', monospace; font-size: 1.1rem; font-weight: bold; line-height: 1.3; margin: 10px 0; text-transform: uppercase; word-break: break-word; text-shadow: 0 0 5px rgba(0, 243, 255, 0.3);"></p>
+
+                    <p style="color: #7294a1; font-size: 0.88rem; line-height: 1.4; margin: 0 0 15px 0;">Вы подтверждаете, что эта финишная точка достигнута и карточка готова занять своё почетное место в Зале славы?</p>
+
+                    <div class="modal-buttons" style="justify-content: center; gap: 15px;">
+                        <button id="triumphCancel" class="btn-back" style="padding: 10px 22px; font-size: 0.85rem; flex: 1;">Назад</button>
+                        <button id="triumphConfirm" class="btn-submit" style="background: #ffd700; color: #050e11; padding: 10px 22px; font-size: 0.85rem; font-weight: bold; box-shadow: 0 0 15px rgba(255, 215, 0, 0.3); flex: 1;">Достигнуто!</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+<script>
+  // =========================================================================
+// ИМПОРТ В ГУГЛ ТАБЛИЦЫ: СКАЧИВАНИЕ ПРОТОКОЛА В ФОРМАТЕ .CSV
+// =========================================================================
+const downloadBtn = document.getElementById('downloadArchiveBtn');
+if (downloadBtn) {
+    downloadBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (typeof sound !== 'undefined' && sound.playSuccess) sound.playSuccess();
+
+        if (!appState.archive || appState.archive.length === 0) {
+            alert("Зал славы пуст. Пока нечего экспортировать!");
+            return;
+        }
+
+        // Формируем структуру CSV таблицы с кодировкой UTF-8 для корректного отображения русского языка
+        // Разделитель - точка с запятой (;), чтобы Гугл Таблицы и Excel сразу поняли структуру колонок
+        let csvContent = "Порядковый номер;Название цели;Удержано дней дисциплины;Дата триумфа\n";
+
+        appState.archive.forEach((item, idx) => {
+            const dateStr = item.archivedAt ? new Date(item.archivedAt).toLocaleDateString() : 'НЕУКАЗАНА';
+
+            // Очищаем текст цели от случайных кавычек или точек с запятой, чтобы не сломать CSV ячейку
+            const cleanGoal = item.goal.replace(/;/g, ' ').replace(/"/g, ' ');
+
+            csvContent += `${idx + 1};"${cleanGoal}";${item.streak};${dateStr}\n`;
+        });
+
+        // Бронированный Blob метод скачивания таблицы для локальных файлов
+        try {
+            // Добавляем специальный BOM-маркер (\uFEFF), чтобы Excel и Гугл Таблицы автоматически открывали русский текст без кракозябр
+            const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: 'text/csv;charset=utf-8;' });
+            const blobUrl = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = "cyber-samurai-database.csv"; // Файл сохранится как таблица CSV
+
+            link.style.display = "none";
+            document.body.appendChild(link);
+            link.click();
+
+            document.body.removeChild(link);
+            URL.revokeObjectURL(blobUrl);
+        } catch (err) {
+            console.error("Сбой генерации CSV:", err);
+            alert("Не удалось экспортировать CSV. Проверьте консоль (F12).");
+        }
+    });
+}
+
+
+
+
+// =========================================================================
+// АВТОНОМНЫЙ ЭФФЕКТ ПРАЗДНИЧНЫХ ВОЗДУШНЫХ ШАРОВ ПРИ ТРИУМФЕ
+// =========================================================================
+function startMatrixTriumphEffect() {
+    const canvas = document.getElementById('triumphCanvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // Включаем отображение холста поверх лагуны
+    canvas.style.display = 'block';
+    canvas.style.opacity = '1';
+
+    let balloons = [];
+    // Киберпанк-палитра: Бирюза, Золото, Коралл, Розовый неон, Зеленый неон
+    const colors = ['#00f3ff', '#ffd700', '#ff5252', '#ff00ff', '#00ff66'];
+
+    // Создаем 15 праздничных шаров со случайными размерами и скоростью
+    for (let i = 0; i < 15; i++) {
+        balloons.push({
+            x: Math.random() * (canvas.width - 60) + 30, // Случайная позиция по ширине
+            y: canvas.height + Math.random() * 200 + 20, // Начинают движение ниже экрана
+            radius: Math.random() * 15 + 20,            // Крупный, симпатичный размер шара
+            speedY: Math.random() * 1.5 + 1.5,          // Скорость подъема вверх
+            swingSpeed: Math.random() * 0.02 + 0.02,    // Скорость покачивания влево-вправо
+            swingRange: Math.random() * 15 + 10,        // Амплитуда покачивания
+            swingAngle: Math.random() * Math.PI,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            alpha: 0.85                                 // Мягкая полупрозрачность
+        });
+    }
+
+    // Главный цикл анимации полета шаров
+    function animateBalloons() {
+        if (canvas.style.display === 'none') return;
+
+        // Чистая очистка экрана без шлейфов, чтобы шары выглядели четко и аккуратно
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        balloons.forEach((b, idx) => {
+            b.y -= b.speedY; // Движение шара строго вверх
+            b.swingAngle += b.swingSpeed;
+
+            // Математическое покачивание (эффект ветра)
+            const currentX = b.x + Math.sin(b.swingAngle) * b.swingRange;
+
+            // Если шар долетает до верхней трети экрана, он начинает плавно растворяться
+            if (b.y < canvas.height * 0.3) {
+                b.alpha -= 0.01;
+            }
+
+            if (b.alpha > 0) {
+                ctx.save();
+                ctx.globalAlpha = b.alpha;
+                ctx.fillStyle = b.color;
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1;
+
+                // Эффект неонового свечения вокруг шарика
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = b.color;
+
+                // 1. Рисуем сам овальный воздушный шарик
+                ctx.beginPath();
+                ctx.ellipse(currentX, b.y, b.radius * 0.85, b.radius, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+
+                // 2. Рисуем маленький узелок-треугольник на дне шара
+                ctx.beginPath();
+                ctx.moveTo(currentX, b.y + b.radius);
+                ctx.lineTo(currentX - 5, b.y + b.radius + 8);
+                ctx.lineTo(currentX + 5, b.y + b.radius + 8);
+                ctx.closePath();
+                ctx.fillStyle = b.color;
+                ctx.fill();
+                ctx.stroke();
+
+                // 3. Рисуем белую ниточку, уходящую вниз
+                ctx.beginPath();
+                ctx.moveTo(currentX, b.y + b.radius + 8);
+                // Делаем ниточку слегка волнистой
+                ctx.quadraticCurveTo(currentX - 4, b.y + b.radius + 25, currentX, b.y + b.radius + 45);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.restore();
+            }
+        });
+
+        requestAnimationFrame(animateBalloons);
+    }
+
+    animateBalloons();
+
+    // Ровно через 5 секунд полностью выключаем слой (когда все шары улетят)
+    setTimeout(() => {
+        canvas.style.transition = 'opacity 0.5s ease';
+        canvas.style.opacity = '0';
+
+        setTimeout(() => {
+            canvas.style.display = 'none';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            balloons = [];
+        }, 500);
+    }, 5000);
+}
+
+
+// =========================================================================
+// ЛЕГКОЕ И КРАСИВОЕ УВЕДОМЛЕНИЕ ЗИМЫ (КРИО-РЕЖИМ БЕЗ ЛАГОВ)
+// =========================================================================
+function manageSnowEffect(start) {
+    const overlay = document.getElementById('freezeOverlay');
+    if (!overlay) return;
+
+    if (start) {
+        overlay.style.display = 'flex'; // Показываем полноэкранный щит с ромбом и текстом
+    } else {
+        overlay.style.display = 'none';  // Полностью убираем оверлей
+    }
+}
+
+// ПРИВЯЗКА КЛИКА К ТУМБЛЕРУ ЗАМОРОЗКИ В УГЛУ ЭКРАНА
+const freezeBtnEl = document.getElementById('freezeSystemBtn');
+if (freezeBtnEl) {
+    freezeBtnEl.addEventListener('click', (e) => {
+        e.stopPropagation();
+
+        if (typeof sound !== 'undefined' && sound.playClick) {
+            sound.playClick();
+        }
+
+        // Переключаем рубильник крио-сна в StateManager
+        appState.toggleFreeze();
+
+        // Обновляем визуал и запускаем/выключаем оверлей
+        syncFreezeUI();
+    });
+}
+
+// Функция синхронизации интерфейса и памяти localStorage
+function syncFreezeUI() {
+    const btn = document.getElementById('freezeSystemBtn');
+    if (!btn) return;
+
+    if (appState.isFrozen) {
+        btn.classList.add('system-frozen'); // Включаем ледяную рамку кнопки
+        manageSnowEffect(true);             // Блокируем экран красивым уведомлением
+    } else {
+        btn.classList.remove('system-frozen');
+        manageSnowEffect(false);            // Возвращаем доступ к карточкам
+    }
+
+    // Принудительно перерисовываем карточки
+    if (typeof renderCards === 'function') {
+        renderCards();
+    }
+}
+
+// Мягкий автоматический запуск проверки статуса при старте/обновлении страницы
+setTimeout(syncFreezeUI, 200);
+
+
+</script>
+
+</body>
+</html>
