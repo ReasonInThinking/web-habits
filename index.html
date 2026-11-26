@@ -1165,7 +1165,7 @@
     // БЛОК 4: УПРАВЛЕНИЕ СОСТОЯНИЕМ (LOCALSTORAGE & STATE)
     // =========================================================================
     const STORAGE_KEY = 'anime_marine_identity_cards';
-    const LIFE_HOURS =  103;
+    const LIFE_HOURS =  30;
 
     class StateManager {
     constructor() {
@@ -1219,7 +1219,7 @@
                 const timePassed = now - card.lastInteractionTime;
                 const limitMs = LIFE_HOURS * 60 * 60 * 1000;
 
-                // Если 72 часа прошли — сбрасываем прогресс в ноль
+                // Если время прошло — сбрасываем прогресс в ноль
                 if (timePassed >= limitMs && card.streak > 0) {
                     card.streak = 0;
                     card.habits.forEach(h => h.completed = false);
